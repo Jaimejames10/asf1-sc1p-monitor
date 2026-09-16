@@ -29,20 +29,13 @@ from asfi_monitor_app.application import monitor_service as service
 #               rq  qq  uq                                                                                       qqq                                               
 # """.strip("\n")
 LOGO_ASCII = """\n\n\n
-             or  uuuuuuuuuuuuuu q                                                                                                                                
-          q  qqqqqqqqqqqqqqqqqq q                                                                                                                                
-        q qqqq           qqqqqq q                                                                                                                                
-       q qqq               qqqq q                                                                                                                                
-      q qqs      qqqqq       qq q                                                                                                                                
-     rq qq     qqqqqqqqqqqqqqqq q    qqqqqqqo    qqqqqqqqqqqqqqqqqqq      oqqqqqqqqqq qq qqqqq    oqqqqqqqqqq  qqqqqqqqqqq      oqqqqqqqqqq                      
-     q qq      qqqqqqqqqqqqqqqq q  qqqqoooqqqqq  qqqqooooqqqqqoooqqqq   qqqqooooqqqqq qqqqqqqq  qqqqqoooqqqqq  qqqqqoooqqqqq  qqqqqoooqqqqq                      
-     q qqq     qqqqqqqqqqqqqqqq q qqqq      qqqq qqq     qqqq     qqqq qqqq      qqqq qqqq     qqqq       qqq  qqq       qqqxqqqq       qqq                      
-     rq qq      qqqqqqqqqqqqqqq q qqq       qqqq qqq     qqqq     qqqq qqq       qqqq qqqq     qqqq       qqq  qqq       qqqqqqqq       qqq                      
-      q uqq        qqqq     qq q  qqqq      qqq  qqq     qqqq     qqqq qqqq      qqqq qqqq     qqqq      qqqq  qqqq      qqq  qqq      qqqq   qrrq   qq          
-       rq qqq              qq q    qqqqqqqqqqq   qqq     qqqq     qqqq  qqqqqqqqqqqqq qqqq      qqqqqqqqqqqqq  qqqqqqqqqqqqx  qqqqqqqqqqqqq   qqqq   qq          
-         q qqqqr        qqqq r       qqqqqqq     qqq      qqq      qqq    qqqqqq  qqq qqqq        qqqqqqq qqq  qqq qqqqqqt      qqqqqqq qqq   q  q q qqqq q      
-           q  qqqqqqqqqqq  q                                                                                   qqq                                               
-              rq  qq  uq                                                                                       qqq                                               
+             ███    ███  ██████  ███    ██ ██ ████████  ██████  ██████       █████  ███████ ███████ ██ 
+████  ████ ██    ██ ████   ██ ██    ██    ██    ██ ██   ██     ██   ██ ██      ██      ██ 
+██ ████ ██ ██    ██ ██ ██  ██ ██    ██    ██    ██ ██████      ███████ ███████ █████   ██ 
+██  ██  ██ ██    ██ ██  ██ ██ ██    ██    ██    ██ ██   ██     ██   ██      ██ ██      ██ 
+██      ██  ██████  ██   ████ ██    ██     ██████  ██   ██     ██   ██ ███████ ██      ██ 
+                                                                                          
+                                                                                          
 \n\n"""
 
 

@@ -82,6 +82,26 @@ def _display_datetime(value: Optional[str]) -> str:
         return str(value).replace("T", " ")[:16]
 
 
+def _effective_status(row: dict, current: datetime) -> str:
+    """Devuelve el estado que debe mostrarse para la hora de la revisión."""
+    estado = row.get("estado") or "ABIERTO"
+    deadline = reportes_db.parse_datetime(row.get("fecha_hora_limite"))
+    if deadline is None:
+        return estado
+
+    try:
+        vencido = current > deadline
+    except TypeError:
+        # Las bases antiguas pueden contener fechas sin zona horaria.
+        vencido = current.replace(tzinfo=None) > deadline.replace(tzinfo=None)
+
+    if estado in ("ABIERTO", "PENDIENTE") and vencido:
+        return "VENCIDO_SIN_ENVIAR" if row.get("tipo_periodo") == "semanal" else "FALTANTE"
+    if estado == "ERROR" and row.get("tipo_periodo") == "semanal" and vencido:
+        return "VENCIDO_SIN_ENVIAR"
+    return estado
+
+
 def _overdue_days(row: dict, current: datetime) -> str:
     deadline = reportes_db.parse_datetime(row.get("fecha_hora_limite"))
     if deadline is None:

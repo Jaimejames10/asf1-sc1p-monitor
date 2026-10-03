@@ -25,7 +25,7 @@ python --version
 
 echo.
 echo [1/4] Instalando dependencias pip...
-pip install playwright plyer schedule --upgrade
+python -m pip install -r requirements.txt --upgrade
 if errorlevel 1 (
     echo [ERROR] Fallo instalando dependencias pip.
     pause
@@ -43,7 +43,7 @@ if errorlevel 1 (
 
 echo.
 echo [3/4] Verificando instalación...
-python -c "from playwright.sync_api import sync_playwright; from plyer import notification; import schedule; print('[OK] Todas las dependencias instaladas correctamente')"
+python -c "from playwright.sync_api import sync_playwright; from plyer import notification; import tzdata; print('[OK] Todas las dependencias instaladas correctamente')"
 if errorlevel 1 (
     echo [ERROR] Verificación fallida. Revisar errores anteriores.
     pause
@@ -51,7 +51,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [4/4] Creando acceso directo en el Escritorio...
+echo [4/4] Preparando el acceso directo de desarrollo...
 set "SCRIPT_DIR=%~dp0"
 set "DESKTOP=%USERPROFILE%\Desktop"
 set "SHORTCUT=%DESKTOP%\ASFI Monitor.lnk"
@@ -69,7 +69,7 @@ powershell -Command ^
 
 echo.
 echo  ============================================
-echo   Instalación completada
+echo   Dependencias instaladas
 echo  ============================================
 echo.
 echo  PRÓXIMOS PASOS:
@@ -78,13 +78,17 @@ echo  1. Ejecutar configurar.bat para registrar:
 echo       - Usuario y contraseña ASFI/SCIP (se guardan en SQLite protegido)
 echo       - Reportes, periodicidad, ocurrencias y reglas de calendario
 echo.
-echo  2. Editar asfi_monitor.py solo para opciones técnicas:
+echo  2. Para generar el instalador Windows:
+echo       powershell -ExecutionPolicy Bypass -File build_windows.ps1
+echo       Compilar despues asfi_monitor.iss con Inno Setup.
+echo.
+echo  3. Editar asfi_monitor.py solo para opciones técnicas:
 echo       - "intervalo_minutos": cada cuántos minutos revisar (ej: 15)
 echo.
-echo  3. Ejecutar el monitor:
+echo  4. Ejecutar el monitor en desarrollo:
 echo       python asfi_monitor.py
 echo.
-echo  Opciones de ejecución:
+echo  Opciones de ejecución en desarrollo:
 echo    python asfi_monitor.py                         (monitoreo continuo, cada 15 min)
 echo    python asfi_monitor.py --intervalo 10          (revisar cada 10 min)
 echo    python asfi_monitor.py --una-vez               (revisar ahora y salir)

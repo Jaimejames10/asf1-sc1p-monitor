@@ -103,7 +103,31 @@
     "sin_enviar_diarios|15/9/2026": {
       "estado": "SIN_ENVIAR",
       "notificado": "2026-09-16T10:36:22-04:00"
+    },
+    "faltantes_diarios|15/9/2026": {
+      "estado": "FALTANTE",
+      "notificado": "2026-09-16T16:20:36.752906"
+    },
+    "sin_enviar_diarios|16/9/2026": {
+      "estado": "SIN_ENVIAR",
+      "notificado": "2026-09-17T09:05:06-04:00"
+    },
+    "2026-09-16|D006 IF - Diario Tasas de Interés Activas|En proceso de recepción": {
+      "estado": "ERROR",
+      "notificado": "2026-09-17T09:00:32.505399"
+    },
+    "2026-10-01|D006 IF - Diario Tasas de Interés Activas|En proceso de recepción": {
+      "estado": "ERROR",
+      "notificado": "2026-10-02T08:59:23.808324"
+    },
+    "vencidos_semanales|1/10/2026": {
+      "estado": "VENCIDO_SIN_ENVIAR",
+      "notificado": "2026-10-02T09:27:38.011021"
+    },
+    "sin_enviar_diarios|1/10/2026": {
+      "estado": "SIN_ENVIAR",
+      "notificado": "2026-10-02T09:27:38-04:00"
     }
   },
-  "ultima_revision": "2026-09-16T13:31:52-04:00"
+  "ultima_revision": "2026-10-02T09:26:24-04:00"
 }

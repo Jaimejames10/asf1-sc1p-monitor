@@ -11,7 +11,18 @@ from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterable, Optional
 
-from .connection import PROJECT_ROOT, connect, local_now, now_iso, resolve_path
+from .connection import (
+    PROJECT_ROOT,
+    connect,
+    configure_playwright_browser_path,
+    ensure_user_data_dirs,
+    local_now,
+    migrate_legacy_data,
+    now_iso,
+    resolve_data_path,
+    resolve_path,
+    resolve_resource_path,
+)
 from .schema import SCHEMA_SQL, SCHEMA_VERSION
 from .security import _protect_secret, _unprotect_secret
 
@@ -298,6 +309,24 @@ def _as_aware(value: datetime) -> datetime:
     return value
 
 
+def _daily_weekend_obligation_relevant(row: dict, current: datetime) -> bool:
+    """Indica si un corte diario de fin de semana aún pertenece a la revisión."""
+    if not row.get("fin_semana_hasta_lunes"):
+        return False
+    cutoff = parse_date(row.get("fecha_corte"))
+    start = parse_date(row.get("fecha_inicio_envio"))
+    deadline = parse_datetime(row.get("fecha_hora_limite"))
+    if (
+        cutoff is None
+        or cutoff.isoweekday() not in (5, 6, 7)
+        or start is None
+        or deadline is None
+        or current.date() < start
+    ):
+        return False
+    return _as_aware(current) <= _as_aware(deadline) or deadline.date() == current.date()
+
+
 def initialize_database(
     db_path: str | Path,
     seed_path: Optional[str | Path] = None,
@@ -310,8 +339,10 @@ def initialize_database(
         conn.executescript(SCHEMA_SQL)
         version = conn.execute("PRAGMA user_version").fetchone()[0]
         if version == 0:
+            _ensure_rule_exception_columns(conn)
+            _migrate_weekend_daily_rules(conn)
             conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
-        elif version in {1, 2, 3, 4, 5, 6}:
+        elif version in {1, 2, 3, 4, 5, 6, 7}:
             _ensure_rule_exception_columns(conn)
             if version == 1:
                 try:
@@ -330,6 +361,7 @@ def initialize_database(
                 _migrate_monthly_catalog(conn, seed_path)
             elif version == 5:
                 _migrate_monthly_catalog(conn, seed_path)
+            _migrate_weekend_daily_rules(conn)
             conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
         elif version > SCHEMA_VERSION:
             raise RuntimeError(
@@ -366,6 +398,26 @@ def _ensure_rule_exception_columns(conn: sqlite3.Connection) -> None:
             "ALTER TABLE reglas_reportes "
             "ADD COLUMN excluir_ultimo_dia_mes INTEGER NOT NULL DEFAULT 0"
         )
+    if "fin_semana_hasta_lunes" not in columns:
+        conn.execute(
+            "ALTER TABLE reglas_reportes "
+            "ADD COLUMN fin_semana_hasta_lunes INTEGER NOT NULL DEFAULT 0"
+        )
+
+
+def _migrate_weekend_daily_rules(conn: sqlite3.Connection) -> None:
+    """Activa el plazo del lunes para las reglas diarias de fin de semana."""
+    conn.execute(
+        """
+        UPDATE reglas_reportes
+           SET fin_semana_hasta_lunes = 1
+         WHERE activo = 1
+           AND dia_semana_corte IN (5, 6, 7)
+           AND reporte_id IN (
+               SELECT id FROM reportes WHERE tipo_periodo = 'diario'
+           )
+        """
+    )
 
 
 def _migrate_weekly_rules(conn: sqlite3.Connection) -> None:
@@ -610,9 +662,9 @@ def _insert_rule(
         INSERT INTO reglas_reportes
           (reporte_id, regla_fecha_corte, dia_semana_corte, dia_mes_corte,
            mes_ancla, frecuencia_meses, dias_envio, ocurrencias_requeridas, hora_limite,
-           dias_plazo, tipo_plazo, excluir_ultimo_dia_mes, activo,
+           dias_plazo, tipo_plazo, excluir_ultimo_dia_mes, fin_semana_hasta_lunes, activo,
            creado_en, actualizado_en)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
         """,
         (
             report_id,
@@ -627,6 +679,7 @@ def _insert_rule(
             rule.get("dias_plazo"),
             rule.get("tipo_plazo"),
             int(bool(rule.get("excluir_ultimo_dia_mes", False))),
+            int(bool(rule.get("fin_semana_hasta_lunes", False))),
             timestamp,
             timestamp,
         ),
@@ -886,7 +939,11 @@ def calculate_obligation(
         # La ventana arranca en la fecha de corte: SCIP acepta envíos el
         # mismo día del corte por la tarde (p. ej. D008 a las 15:56).
         window_start = cutoff
-        deadline_day = today
+        if rule.get("fin_semana_hasta_lunes") and cutoff.isoweekday() in (5, 6, 7):
+            deadline_day = cutoff + timedelta(days=8 - cutoff.isoweekday())
+            deadline_hour = WEEKLY_DEADLINE_TIME
+        else:
+            deadline_day = today
         period_key = cutoff.isoformat()
     elif kind in {"VIERNES", "SEMANA"}:
         target = int(rule.get("dia_semana_corte") or 5)
@@ -1029,12 +1086,59 @@ def get_required_occurrence_counts(
     return counts
 
 
+def list_unknown_period_cutoffs(
+    conn: sqlite3.Connection,
+    current: Optional[datetime] = None,
+    lookback_days: int = 62,
+) -> list[dict]:
+    """Cortes vencidos del período vigente que el monitor aún no verificó.
+
+    Sirve al primer ciclo tras instalar el monitor en una PC nueva: las
+    obligaciones existentes nacieron con el plazo ya vencido y, sin datos,
+    terminarían marcadas como faltantes aunque su envío exista en SCAN.
+    Devuelve los cortes nunca evaluados (sin última revisión y sin
+    observaciones vinculadas) cuyo plazo ya pasó y siguen sin resolver.
+    """
+    current = _as_aware(current or local_now())
+    limite_busqueda = (
+        current.date() - timedelta(days=max(1, int(lookback_days)))
+    ).isoformat()
+    rows = conn.execute(
+        """
+        SELECT o.id, o.fecha_corte, o.fecha_hora_limite, o.ocurrencia,
+               p.codigo, p.nombre, p.tipo_periodo
+        FROM obligaciones o
+        JOIN reportes p ON p.id = o.reporte_id
+        JOIN reglas_reportes rr ON rr.id = o.regla_id AND rr.activo = 1
+        WHERE p.activo = 1 AND p.validacion_activa = 1
+          AND o.estado NOT IN ('EXITOSO', 'EXITOSO_TARDIO', 'DESCARTADO')
+          AND o.fecha_corte >= ?
+          AND o.fecha_hora_limite IS NOT NULL
+          AND o.ultima_revision IS NULL
+          AND NOT EXISTS (
+              SELECT 1 FROM obligacion_observacion oo WHERE oo.obligacion_id = o.id
+          )
+        """,
+        (limite_busqueda,),
+    ).fetchall()
+    desconocidos: dict[str, dict] = {}
+    for row in rows:
+        deadline = parse_datetime(row["fecha_hora_limite"])
+        if deadline is None or _as_aware(current) <= _as_aware(deadline):
+            continue
+        item = dict(row)
+        item["fecha_limite"] = deadline.date().isoformat()
+        desconocidos.setdefault(row["fecha_corte"], item)
+    return [desconocidos[clave] for clave in sorted(desconocidos)]
+
+
 def get_query_date_ranges(
     conn: sqlite3.Connection,
     current: Optional[datetime] = None,
     lookback_days: int = 62,
     configured_start: Optional[str | date] = None,
     configured_end: Optional[str | date] = None,
+    cortes_adicionales: Optional[Iterable[date]] = None,
 ) -> list[tuple[date, date]]:
     """Devuelve rangos separados para consultar las fechas necesarias en ASFI.
 
@@ -1054,32 +1158,61 @@ def get_query_date_ranges(
 
     yesterday = current.date() - timedelta(days=1)
     obligations = ensure_obligations(conn, current)
+    obligations.extend(
+        row
+        for row in list_current_obligations(conn)
+        if row["tipo_periodo"] in {"semanal", "mensual"}
+        or (
+            row["tipo_periodo"] == "diario"
+            and _daily_weekend_obligation_relevant(row, current)
+        )
+    )
     active_weekly_cutoffs = []
+    active_weekend_cutoffs = []
     active_monthly_cutoffs = []
     for row in obligations:
-        if row["tipo_periodo"] not in {"semanal", "mensual"}:
+        if row["tipo_periodo"] not in {"diario", "semanal", "mensual"}:
             continue
         cutoff = parse_date(row["fecha_corte"])
         start = parse_date(row["fecha_inicio_envio"])
         deadline = parse_datetime(row["fecha_hora_limite"])
-        if (
+        window_open = (
             cutoff is not None
             and start is not None
             and deadline is not None
             and current.date() >= start
             and _as_aware(current) <= _as_aware(deadline)
-        ):
-            target = (
-                active_monthly_cutoffs
-                if row["tipo_periodo"] == "mensual"
-                else active_weekly_cutoffs
-            )
+        )
+        same_day_weekend_deadline = (
+            row["tipo_periodo"] == "diario"
+            and _daily_weekend_obligation_relevant(row, current)
+        )
+        if window_open or same_day_weekend_deadline:
+            if row["tipo_periodo"] == "mensual":
+                target = active_monthly_cutoffs
+            elif row["tipo_periodo"] == "semanal":
+                target = active_weekly_cutoffs
+            elif (
+                row.get("fin_semana_hasta_lunes")
+                and cutoff.isoweekday() in (5, 6, 7)
+            ):
+                target = active_weekend_cutoffs
+            else:
+                continue
             if cutoff not in target:
                 target.append(cutoff)
 
-    weekly_start = min([yesterday, *active_weekly_cutoffs])
+    weekly_start = min([yesterday, *active_weekly_cutoffs, *active_weekend_cutoffs])
     ranges = [(weekly_start, yesterday)]
     ranges.extend((cutoff, cutoff) for cutoff in active_monthly_cutoffs)
+    if cortes_adicionales:
+        # Cortes vencidos de la primera instalación: se consultan una vez
+        # para descubrir envíos hechos antes de instalar el monitor.
+        for corte in cortes_adicionales:
+            value = parse_date(corte)
+            if value is None:
+                continue
+            ranges.append((value, value))
     ranges.sort()
 
     merged: list[tuple[date, date]] = []
@@ -1302,6 +1435,12 @@ def evaluate_obligations(
     # Las obligaciones vigentes y las vencidas sin resolver deben seguir
     # evaluándose aunque la respuesta actual de SCIP no repita sus filas.
     current_obligations = ensure_obligations(conn, current)
+    current_obligations.extend(
+        row
+        for row in list_current_obligations(conn)
+        if row["tipo_periodo"] == "diario"
+        and _daily_weekend_obligation_relevant(row, current)
+    )
     grouped: dict[tuple[Optional[int], Optional[str]], list[dict]] = {}
     for reporte in reportes:
         report_id = lookup_report_id(conn, reporte.get("grupo", ""))
@@ -1406,13 +1545,14 @@ def evaluate_obligations(
     with conn:
         for row in candidates:
             obligation_id = int(row["id"])
-            occurrence_rows = []
-            if row["tipo_periodo"] in ("semanal", "mensual"):
-                occurrence_rows = [
-                    item
-                    for item in history.get(obligation_id, [])
-                    if _observation_in_window(item, row, current)
-                ]
+            # El historial vinculado se aplica a todo tipo de período: una
+            # respuesta parcial de SCIP (común tras subsanaciones o recargas)
+            # no debe borrar envíos ya registrados como exitosos.
+            occurrence_rows = [
+                item
+                for item in history.get(obligation_id, [])
+                if _observation_in_window(item, row, current)
+            ]
             occurrence_rows.extend(current_observations.get(obligation_id, []))
             late_rows = []
             if row["tipo_periodo"] in ("semanal", "mensual"):
@@ -1673,7 +1813,7 @@ def list_current_obligations(conn: sqlite3.Connection) -> list[dict]:
         """
         SELECT o.id, o.periodo_clave, o.fecha_corte, o.fecha_inicio_envio,
                o.fecha_hora_limite, o.ocurrencia, o.estado, o.ultima_revision,
-               p.codigo, p.nombre, p.tipo_periodo
+               p.codigo, p.nombre, p.tipo_periodo, rr.fin_semana_hasta_lunes
         FROM obligaciones o
         JOIN reportes p ON p.id = o.reporte_id
         JOIN reglas_reportes rr ON rr.id = o.regla_id AND rr.activo = 1
@@ -1735,6 +1875,188 @@ def list_today_obligations(
         ids,
     ).fetchall()
     return [dict(row) for row in rows]
+
+
+def _project_next_period_ends(rule: dict, today: date, count: int) -> list[date]:
+    """Proyecta los próximos cortes de fin de período de una regla calendarizada."""
+    frequency = max(1, int(rule.get("frecuencia_meses") or 1))
+    anchor_month = int(rule.get("mes_ancla") or 1)
+    current_end = _period_end(today, frequency, anchor_month)
+    ends: list[date] = []
+    year, month = current_end.year, current_end.month
+    for _ in range(240):
+        month += 1
+        if month > 12:
+            month = 1
+            year += 1
+        candidate = _month_end(year, month)
+        if candidate <= current_end:
+            continue
+        if ((candidate.month - anchor_month) % frequency) == (frequency - 1):
+            ends.append(candidate)
+            if len(ends) >= count:
+                break
+    return ends
+
+
+def list_upcoming_sends(
+    conn: sqlite3.Connection,
+    dias: int = 45,
+    current: Optional[datetime] = None,
+) -> list[dict]:
+    """Agenda de envíos: reportes que se envían hoy y en los próximos días.
+
+    Combina las obligaciones guardadas (estado real, actualizado por el
+    monitor al revisar ASFI) con la proyección de las reglas activas para los
+    días por venir. Cada fila agrupa por la fecha y hora límite del envío; las
+    proyecciones todavía sin obligación guardada se entregan con estado
+    ``PLANEADO``. No descarta ni modifica estados.
+    """
+    current = _as_aware(current or local_now())
+    dias = max(1, int(dias))
+    today = current.date()
+    horizon = today + timedelta(days=dias - 1)
+    horizon_tolerance = horizon + timedelta(days=3)
+    holidays = get_holidays(conn)
+    ensure_obligations(conn, current)
+
+    plan: dict[tuple[int, str], dict] = {}
+    for offset in range(dias):
+        day = today + timedelta(days=offset)
+        for rule in get_active_rules(conn):
+            calculated = calculate_obligation(rule, day, holidays)
+            if not calculated or not calculated.get("fecha_hora_limite"):
+                continue
+            deadline = parse_datetime(calculated["fecha_hora_limite"])
+            if deadline is None:
+                continue
+            date_limit = deadline.date()
+            if not today <= date_limit <= horizon_tolerance:
+                continue
+            key = (calculated["regla_id"], calculated["periodo_clave"])
+            if key in plan:
+                continue
+            plan[key] = {**calculated, "deadline": deadline}
+
+    # Las reglas de fin de período aún no alcanzan su corte dentro del ciclo
+    # diario, por eso se proyecta explícitamente el plazo de los períodos por
+    # venir (los mensuales son el caso principal).
+    for rule in get_active_rules(conn):
+        kind = str(rule.get("regla_fecha_corte") or "").strip().upper()
+        if kind not in {"FIN_MES", "FIN_PERIODO"}:
+            continue
+        for cutoff in _project_next_period_ends(rule, today, 3):
+            deadline_day = _deadline_date(
+                cutoff, rule.get("dias_plazo"), rule.get("tipo_plazo"), holidays
+            )
+            if deadline_day is None:
+                continue
+            if (
+                rule.get("excluir_ultimo_dia_mes")
+                and deadline_day == _month_end(deadline_day.year, deadline_day.month)
+            ):
+                continue
+            deadline = _combine_date_time(deadline_day, rule.get("hora_limite"))
+            if deadline is None:
+                deadline = _as_aware(datetime.combine(deadline_day, datetime.min.time()))
+            if not today <= deadline.date() <= horizon:
+                continue
+            frequency = max(1, int(rule.get("frecuencia_meses") or 1))
+            period_key = (
+                cutoff.strftime("%Y-%m") if frequency == 1 else cutoff.isoformat()
+            )
+            key = (rule["id"], period_key)
+            if key in plan:
+                continue
+            plan[key] = {
+                "regla_id": rule["id"],
+                "reporte_id": rule["reporte_id"],
+                "codigo": rule["codigo"],
+                "nombre": rule["nombre"],
+                "tipo_periodo": rule["tipo_periodo"],
+                "periodo_clave": period_key,
+                "fecha_corte": cutoff.isoformat(),
+                "fecha_inicio_envio": cutoff.isoformat(),
+                "fecha_hora_limite": deadline.isoformat(timespec="seconds"),
+                "ocurrencias_requeridas": int(rule.get("ocurrencias_requeridas") or 1),
+                "deadline": deadline,
+            }
+
+    rows: list[dict] = []
+    for (regla_id, periodo_clave), entry in plan.items():
+        stored = conn.execute(
+            """
+            SELECT o.estado, o.ocurrencia, o.fecha_corte, o.fecha_inicio_envio,
+                   o.fecha_hora_limite, o.ultima_revision,
+                   (
+                       SELECT obs.fecha_llegada
+                       FROM obligacion_observacion oo
+                       JOIN observaciones_reportes obs ON obs.id = oo.observacion_id
+                       WHERE oo.obligacion_id = o.id
+                         AND obs.fecha_llegada IS NOT NULL
+                         AND TRIM(obs.fecha_llegada) <> ''
+                       ORDER BY obs.observado_en DESC, obs.id DESC
+                       LIMIT 1
+                   ) AS fecha_envio,
+                   p.codigo, p.nombre, p.tipo_periodo
+            FROM obligaciones o
+            JOIN reportes p ON p.id = o.reporte_id
+            JOIN reglas_reportes rr ON rr.id = o.regla_id AND rr.activo = 1
+            WHERE o.regla_id = ? AND o.periodo_clave = ?
+              AND p.activo = 1 AND p.validacion_activa = 1
+            ORDER BY o.ocurrencia
+            LIMIT 1
+            """,
+            (regla_id, periodo_clave),
+        ).fetchone()
+        deadline = entry["deadline"]
+        if stored is not None:
+            row = dict(stored)
+            planificado = 0
+        else:
+            row = {
+                "estado": "PLANEADO",
+                "ocurrencia": 1,
+                "fecha_corte": entry["fecha_corte"],
+                "fecha_inicio_envio": entry.get("fecha_inicio_envio"),
+                "fecha_hora_limite": entry["fecha_hora_limite"],
+                "ultima_revision": None,
+                "fecha_envio": None,
+                "codigo": entry["codigo"],
+                "nombre": entry["nombre"],
+                "tipo_periodo": entry["tipo_periodo"],
+            }
+            planificado = 1
+        rows.append(
+            {
+                "regla_id": regla_id,
+                "periodo_clave": periodo_clave,
+                "ocurrencia": row.get("ocurrencia") or 1,
+                "fecha_limite": deadline.date().isoformat(),
+                "hora_limite": deadline.strftime("%H:%M"),
+                "estado": row.get("estado"),
+                "fecha_corte": row.get("fecha_corte"),
+                "fecha_inicio_envio": row.get("fecha_inicio_envio"),
+                "fecha_hora_limite": row.get("fecha_hora_limite"),
+                "ultima_revision": row.get("ultima_revision"),
+                "fecha_envio": row.get("fecha_envio"),
+                "codigo": row.get("codigo") or entry["codigo"],
+                "nombre": row.get("nombre") or entry["nombre"],
+                "tipo_periodo": row.get("tipo_periodo") or entry["tipo_periodo"],
+                "planificado": planificado,
+            }
+        )
+
+    order_pesos = {"diario": 0, "semanal": 1, "mensual": 2}
+    rows.sort(
+        key=lambda item: (
+            item["fecha_limite"],
+            order_pesos.get(item["tipo_periodo"], 3),
+            item["codigo"],
+            item["ocurrencia"],
+        )
+    )
+    return rows
 
 
 def credentials_updated_at(conn: sqlite3.Connection) -> Optional[str]:

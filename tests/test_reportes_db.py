@@ -50,6 +50,13 @@ class ReportesDatabaseTests(unittest.TestCase):
         )
         d001 = next(item for item in catalog if item["codigo"] == "D001_D005")
         self.assertTrue(all(rule["excluir_ultimo_dia_mes"] for rule in d001["reglas"]))
+        self.assertTrue(
+            all(
+                rule["fin_semana_hasta_lunes"]
+                for rule in d001["reglas"]
+                if rule["dia_semana_corte"] in (5, 6, 7)
+            )
+        )
         preamypes = next(item for item in catalog if item["codigo"] == "PREAMYPES_SEMANAL")
         self.assertEqual(preamypes["tipo_periodo"], "semanal")
         self.assertEqual(preamypes["reglas"][0]["regla_fecha_corte"], "SEMANAL")
@@ -111,7 +118,7 @@ class ReportesDatabaseTests(unittest.TestCase):
             tuple(rules[1][key] for key in ("regla_fecha_corte", "dia_semana_corte", "dias_envio", "hora_limite")),
             ("SEMANAL", 7, "[]", "12:00"),
         )
-        self.assertEqual(migrated.execute("PRAGMA user_version").fetchone()[0], 7)
+        self.assertEqual(migrated.execute("PRAGMA user_version").fetchone()[0], 8)
         migrated.close()
 
     def test_d008_requires_two_successful_occurrences(self):
@@ -646,6 +653,76 @@ class ReportesDatabaseTests(unittest.TestCase):
         )
         self.assertTrue(report["reglas"][0]["excluir_ultimo_dia_mes"])
 
+    def test_daily_weekend_rule_deadline_is_monday_noon(self):
+        report_id = reportes_db.save_report(
+            self.conn,
+            None,
+            "FDS001",
+            "Reporte diario de fin de semana",
+            "diario",
+            True,
+            True,
+            "",
+            [{
+                "regla_fecha_corte": "AYER",
+                "dia_semana_corte": 5,
+                "dias_envio": [6],
+                "hora_limite": "12:00",
+                "fin_semana_hasta_lunes": True,
+            }],
+            [],
+        )
+        report = next(item for item in reportes_db.get_catalog(self.conn) if item["id"] == report_id)
+        rule = dict(report["reglas"][0])
+        rule.update({
+            "codigo": report["codigo"],
+            "nombre": report["nombre"],
+            "tipo_periodo": report["tipo_periodo"],
+        })
+
+        saturday = reportes_db.calculate_obligation(rule, date(2026, 9, 5))
+        self.assertEqual(saturday["fecha_corte"], "2026-09-04")
+        self.assertIn("2026-09-07T12:00", saturday["fecha_hora_limite"])
+
+        rule["dia_semana_corte"] = 6
+        sunday = reportes_db.calculate_obligation(rule, date(2026, 9, 6))
+        self.assertEqual(sunday["fecha_corte"], "2026-09-05")
+        self.assertIn("2026-09-07T12:00", sunday["fecha_hora_limite"])
+
+        rule["dia_semana_corte"] = 7
+        monday = reportes_db.calculate_obligation(rule, date(2026, 9, 7))
+        self.assertEqual(monday["fecha_corte"], "2026-09-06")
+        self.assertIn("2026-09-07T12:00", monday["fecha_hora_limite"])
+
+        rule["dia_semana_corte"] = 4
+        weekday = reportes_db.calculate_obligation(rule, date(2026, 9, 4))
+        self.assertIn("2026-09-04T12:00", weekday["fecha_hora_limite"])
+
+        rule["fin_semana_hasta_lunes"] = False
+        rule["dia_semana_corte"] = 5
+        regular = reportes_db.calculate_obligation(rule, date(2026, 9, 5))
+        self.assertIn("2026-09-05T12:00", regular["fecha_hora_limite"])
+
+    def test_weekend_daily_window_keeps_all_three_cutoffs_active(self):
+        reportes_db.ensure_obligations(self.conn, datetime(2026, 9, 5, 10, 0))
+        reportes_db.ensure_obligations(self.conn, datetime(2026, 9, 6, 10, 0))
+
+        ranges = reportes_db.get_query_date_ranges(
+            self.conn, datetime(2026, 9, 7, 10, 0)
+        )
+        self.assertLessEqual(min(start for start, _end in ranges), date(2026, 9, 4))
+        self.assertGreaterEqual(max(end for _start, end in ranges), date(2026, 9, 6))
+
+        result = reportes_db.evaluate_obligations(
+            self.conn, [], datetime(2026, 9, 7, 12, 1)
+        )
+        self.assertEqual(result["diario"].count(D007), 3)
+
+        result_later = reportes_db.evaluate_obligations(
+            self.conn, [], datetime(2026, 9, 9, 10, 0)
+        )
+        self.assertNotIn(D007, result_later["diario"])
+
     def test_version_three_database_migrates_monthly_catalog(self):
         path = Path(self.temp_dir.name) / "monthly-migration.db"
         conn = reportes_db.connect(path)
@@ -691,7 +768,7 @@ class ReportesDatabaseTests(unittest.TestCase):
             (active_rule["dias_plazo"], active_rule["tipo_plazo"], active_rule["hora_limite"]),
             (1, "habil", "23:59"),
         )
-        self.assertEqual(migrated.execute("PRAGMA user_version").fetchone()[0], 7)
+        self.assertEqual(migrated.execute("PRAGMA user_version").fetchone()[0], 8)
         migrated.close()
 
     def test_current_and_pending_obligation_views(self):
@@ -742,6 +819,112 @@ class ReportesDatabaseTests(unittest.TestCase):
         today = reportes_db.list_today_obligations(self.conn, current)
         sent = next(item for item in today if item["codigo"] == "D007")
         self.assertEqual(sent["fecha_envio"], "3/9/2026 09:30:00")
+
+    def test_upcoming_sends_agenda_groups_deadlines(self):
+        current = datetime(2026, 9, 1, 10, 0)
+        rows = reportes_db.list_upcoming_sends(self.conn, 45, current)
+
+        self.assertTrue(rows)
+        self.assertTrue(all(row["fecha_limite"] >= "2026-09-01" for row in rows))
+        # Cada envío aparece una sola vez por reporte, período y ocurrencia.
+        unique = {(row["codigo"], row["periodo_clave"], row["ocurrencia"]) for row in rows}
+        self.assertEqual(len(unique), len(rows))
+
+        # Los mensuales se distribuyen según su plazo propio (1, 2, 15 días...).
+        monthly = [
+            row
+            for row in rows
+            if row["tipo_periodo"] == "mensual" and row["ocurrencia"] == 1
+        ]
+        deadlines = {
+            row["codigo"]: row["fecha_limite"]
+            for row in monthly
+            if row["planificado"] == 0
+        }
+        self.assertEqual(deadlines["M019"], "2026-09-01")
+        self.assertEqual(deadlines["MB01_MB20"], "2026-09-02")
+        self.assertEqual(deadlines["TARIFAS_SERVICIOS"], "2026-09-15")
+
+        # El período mensual actual ya está guardado: se muestra su estado real.
+        m019_actual = next(
+            row
+            for row in rows
+            if row["codigo"] == "M019" and row["fecha_limite"] == "2026-09-01"
+        )
+        self.assertEqual(m019_actual["planificado"], 0)
+        self.assertEqual(m019_actual["estado"], "ABIERTO")
+
+        # El próximo período mensual se proyecta como PLANEADO.
+        m019_next = next(
+            row
+            for row in rows
+            if row["codigo"] == "M019" and row["planificado"] == 1
+        )
+        self.assertEqual(m019_next["estado"], "PLANEADO")
+        self.assertEqual(m019_next["fecha_limite"], "2026-10-01")
+
+    def test_daily_success_survives_partial_scrape_after_subsanacion(self):
+        # Envío exitoso registrado la primera vez.
+        current = datetime(2026, 9, 1, 10, 0)
+        reportes_db.ensure_obligations(self.conn, current)
+        exitoso = scraped_row(D007, "31/8/2026", arrival="1/9/2026 08:42:00")
+        run_id = reportes_db.start_scrape_run(
+            self.conn, date(2026, 8, 31), date(2026, 8, 31)
+        )
+        reportes_db.store_observations(self.conn, run_id, [exitoso])
+        reportes_db.evaluate_obligations(self.conn, [exitoso], current)
+
+        def estado_actual():
+            fila = self.conn.execute(
+                """
+                SELECT o.estado FROM obligaciones o
+                WHERE o.reporte_id = (
+                    SELECT id FROM reportes WHERE codigo = 'D007'
+                ) AND o.periodo_clave = '2026-08-31' AND o.ocurrencia = 1
+                """
+            ).fetchone()
+            return fila["estado"]
+
+        # Segunda respuesta de SCIP sin filas (por ejemplo, tras una
+        # subsanación o recarga): el envío exitoso previo no se puede borrar
+        # aunque el plazo ya haya vencido.
+        despues_del_plazo = datetime(2026, 9, 1, 13, 0)
+        reportes_db.evaluate_obligations(self.conn, [], despues_del_plazo)
+        self.assertEqual(estado_actual(), "EXITOSO")
+        faltantes = self.conn.execute(
+            """
+            SELECT COUNT(*) FROM incumplimientos WHERE obligacion_id = (
+                SELECT id FROM obligaciones
+                WHERE reporte_id = (SELECT id FROM reportes WHERE codigo = 'D007')
+                  AND periodo_clave = '2026-08-31' AND ocurrencia = 1
+            ) AND resuelto_en IS NULL
+            """
+        ).fetchone()[0]
+        self.assertEqual(faltantes, 0)
+
+    def test_upcoming_sends_reflect_send_status(self):
+        current = datetime(2026, 9, 1, 10, 0)
+        reportes_db.ensure_obligations(self.conn, current)
+        row = scraped_row(
+            D007,
+            "31/8/2026",
+            arrival="1/9/2026 09:30:00",
+        )
+        run_id = reportes_db.start_scrape_run(
+            self.conn, date(2026, 8, 31), date(2026, 8, 31)
+        )
+        reportes_db.store_observations(self.conn, run_id, [row])
+        reportes_db.evaluate_obligations(self.conn, [row], current)
+
+        rows = reportes_db.list_upcoming_sends(self.conn, 45, current)
+        sent = next(
+            row
+            for row in rows
+            if row["codigo"] == "D007" and row["fecha_limite"] == "2026-09-01"
+        )
+        self.assertEqual(sent["estado"], "EXITOSO")
+        self.assertEqual(sent["fecha_envio"], "1/9/2026 09:30:00")
+        self.assertEqual(sent["planificado"], 0)
 
     def test_catalog_crud_and_semiannual_period(self):
         report_id = reportes_db.save_report(

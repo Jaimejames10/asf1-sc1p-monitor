@@ -22,12 +22,18 @@ from __future__ import annotations
 
 import io
 import logging
+from logging.handlers import RotatingFileHandler
+import os
 import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
 from asfi_monitor_app.config import CONFIG
+from asfi_monitor_app.application.connectivity import (
+    hay_conexion,
+    parece_problema_de_conexion,
+)
 from asfi_monitor_app.domain.analysis import (
     _es_error_validacion,
     _normalizar_texto,
@@ -48,14 +54,18 @@ from asfi_monitor_app.storage.state import (
     guardar_estado as _guardar_estado,
 )
 from asfi_monitor_app.storage import api as reportes_db
+from asfi_monitor_app.storage.connection import ensure_user_data_dirs
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-BASE_DIR = PROJECT_ROOT
+BASE_DIR = reportes_db.resolve_data_path(".")
+ensure_user_data_dirs()
 
 
 def ruta_archivo(config_key: str) -> Path:
     """Resuelve un archivo de configuración relativo al proyecto."""
-    return reportes_db.resolve_path(CONFIG[config_key])
+    if config_key in {"archivo_estado", "archivo_no_enviados", "archivo_base_datos"}:
+        return reportes_db.resolve_data_path(CONFIG[config_key])
+    return reportes_db.resolve_resource_path(CONFIG[config_key])
 
 
 # Ruta absoluta del ícono de notificaciones (relativa a este script y no al CWD,
@@ -68,11 +78,13 @@ if not RUTA_ICONO.exists():
 # ──────────────────────────────────────────────────────────────────────────────
 # LOGGING
 # ──────────────────────────────────────────────────────────────────────────────
-# Configurar stdout con encoding UTF-8
-if sys.stdout.encoding != 'utf-8':
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+# Configurar stdout con encoding UTF-8 cuando existe una consola interactiva.
+if sys.stdout is not None and getattr(sys.stdout, "buffer", None) is not None:
+    if sys.stdout.encoding != "utf-8":
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
-CONSOLE_HANDLER = logging.StreamHandler(sys.stdout)
+_console_stream = sys.stdout if sys.stdout is not None else open(os.devnull, "w", encoding="utf-8")
+CONSOLE_HANDLER = logging.StreamHandler(_console_stream)
 CONSOLE_HANDLER.setLevel(logging.ERROR)
 
 logging.basicConfig(
@@ -80,7 +92,12 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
         CONSOLE_HANDLER,
-        logging.FileHandler(BASE_DIR / "asfi_monitor.log", encoding="utf-8"),
+        RotatingFileHandler(
+            reportes_db.resolve_data_path("logs/asfi_monitor.log"),
+            maxBytes=5 * 1024 * 1024,
+            backupCount=5,
+            encoding="utf-8",
+        ),
     ],
 )
 log = logging.getLogger("asfi_monitor")
@@ -377,6 +394,8 @@ def imprimir_resumen_consola(
 # ──────────────────────────────────────────────────────────────────────────────
 def inicializar_base_datos() -> Path:
     """Crea/aplica la base y carga el catálogo inicial si todavía está vacía."""
+    reportes_db.ensure_user_data_dirs()
+    reportes_db.migrate_legacy_data()
     return reportes_db.initialize_database(
         ruta_archivo("archivo_base_datos"),
         ruta_archivo("archivo_semilla"),
@@ -440,16 +459,46 @@ def ejecutar_revision() -> None:
             log.error(f"No se pudieron actualizar las credenciales desde SQLite: {exc}")
             return
 
+    # Sin internet la consulta llega vacía y las obligaciones abiertas
+    # terminarían marcadas FALTANTE por error: se salta el ciclo entero y se
+    # avisa; cuando la conexión vuelva el análisis corre con normalidad.
+    if not hay_conexion(CONFIG.get("url_base", "")):
+        log.warning("Sin conexión a internet: revisión omitida para no marcar faltantes.")
+        notificar(
+            "🟠 ASFI/SCIP Monitor - Sin internet",
+            (
+                "No hay conexión a internet. Esta revisión se omitió y no se "
+                "marcaron reportes como faltantes; se reintentará en el "
+                "próximo ciclo de análisis."
+            ),
+        )
+        return
+
     estado = cargar_estado()
     estado["ultima_revision"] = reportes_db.now_iso(current)
 
     conn = reportes_db.connect(db_path)
     reportes_db.ensure_obligations(conn, current)
+    # Primer ciclo tras instalar el monitor (o cortes nunca verificados):
+    # se consulta también su fecha de corte en ASFI para descubrir envíos
+    # hechos antes de instalar la PC y no marcarlos como faltantes.
+    cortes_desconocidos = []
+    for item in reportes_db.list_unknown_period_cutoffs(conn, current):
+        corte = reportes_db.parse_date(item["fecha_corte"])
+        if corte is not None:
+            cortes_desconocidos.append(corte)
+    if cortes_desconocidos:
+        log.info(
+            "Primer ciclo: verificando %s corte(s) previo(s) a la instalación: %s",
+            len(cortes_desconocidos),
+            ", ".join(reportes_db.format_asfi_date(corte) for corte in cortes_desconocidos),
+        )
     rangos_consulta = reportes_db.get_query_date_ranges(
         conn,
         current,
         configured_start=CONFIG.get("fecha_inicio_corte"),
         configured_end=CONFIG.get("fecha_fin_corte"),
+        cortes_adicionales=cortes_desconocidos,
     )
     fecha_inicio = min(start for start, _end in rangos_consulta)
     fecha_fin = max(end for _start, end in rangos_consulta)
@@ -468,11 +517,22 @@ def ejecutar_revision() -> None:
         reportes_db.finish_scrape_run(conn, run_id, "ERROR", 0, str(exc)[:500])
         conn.close()
         log.error(f"Fallo crítico obteniendo reportes: {exc}", exc_info=True)
-        notificar(
-            "🔴 ASFI/SCIP Monitor - Fallo crítico",
-            f"Error obteniendo reportes: {str(exc)[:200]}",
-            urgente=True,
-        )
+        if parece_problema_de_conexion(exc) or not hay_conexion(CONFIG.get("url_base", "")):
+            notificar(
+                "🟠 ASFI/SCIP Monitor - Sin internet",
+                (
+                    "Se cortó la conexión durante la consulta a ASFI. Esta "
+                    "revisión se interrumpió sin marcar reportes como "
+                    "faltantes; se reintentará en el próximo ciclo."
+                ),
+                urgente=True,
+            )
+        else:
+            notificar(
+                "🔴 ASFI/SCIP Monitor - Fallo crítico",
+                f"Error obteniendo reportes: {str(exc)[:200]}",
+                urgente=True,
+            )
         guardar_estado(estado)
         return
 
@@ -484,8 +544,17 @@ def ejecutar_revision() -> None:
         obligaciones_previas = reportes_db.list_current_obligations(conn)
         active_period_types: dict[str, set[str]] = {}
         for fila in obligaciones_previas:
-            if fila["tipo_periodo"] not in ("semanal", "mensual"):
+            tipo_periodo = fila["tipo_periodo"]
+            if tipo_periodo not in ("diario", "semanal", "mensual"):
                 continue
+            if tipo_periodo == "diario":
+                cutoff = reportes_db.parse_date(fila.get("fecha_corte"))
+                if (
+                    not fila.get("fin_semana_hasta_lunes")
+                    or cutoff is None
+                    or cutoff.isoweekday() not in (5, 6, 7)
+                ):
+                    continue
             inicio = reportes_db.parse_date(fila.get("fecha_inicio_envio"))
             limite = reportes_db.parse_datetime(fila.get("fecha_hora_limite"))
             if (

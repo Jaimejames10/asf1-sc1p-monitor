@@ -43,7 +43,11 @@ class RuleDialog(tk.Toplevel):
             value="" if self.weekly else _days_to_text(rule.get("dias_envio", []))
         )
         self.deadline_time = tk.StringVar(
-            value="12:00" if self.weekly else (rule.get("hora_limite") or "")
+            value=(
+                "12:00"
+                if self.weekly
+                else (rule.get("hora_limite") or "")
+            )
         )
         self.occurrences = tk.StringVar(value=str(rule.get("ocurrencias_requeridas", 1)))
         self.grace_days = tk.StringVar(
@@ -56,6 +60,9 @@ class RuleDialog(tk.Toplevel):
         )
         self.exclude_last_day_month = tk.BooleanVar(
             value=bool(rule.get("excluir_ultimo_dia_mes", False))
+        )
+        self.weekend_until_monday = tk.BooleanVar(
+            value=bool(rule.get("fin_semana_hasta_lunes", False))
         )
 
         frame = ttk.Frame(self, padding=12)
@@ -121,18 +128,27 @@ class RuleDialog(tk.Toplevel):
             text="No generar obligación el último día del mes",
             variable=self.exclude_last_day_month,
         ).grid(row=len(fields), column=0, columnspan=2, sticky="w", pady=(5, 3))
+        weekend_check = ttk.Checkbutton(
+            frame,
+            text="Fin de semana: permitir envío hasta el lunes a las 12:00",
+            variable=self.weekend_until_monday,
+        )
+        if self.weekly:
+            weekend_check.state(["disabled"])
+        weekend_check.grid(row=len(fields) + 1, column=0, columnspan=2, sticky="w", pady=(3, 3))
         ttk.Label(
             frame,
             text=(
                 "El reporte se busca por su fecha de corte y vence el lunes a las 12:00. "
                 "1 = lunes ... 7 = domingo."
                 if self.weekly
-                else "1 = lunes ... 7 = domingo. Envíos requeridos indica cuántas ocurrencias deben llegar."
+                else "Las reglas diarias de viernes, sábado y domingo con esta opción vencen el lunes a las 12:00. "
+                "1 = lunes ... 7 = domingo. Envíos requeridos indica cuántas ocurrencias deben llegar."
             ),
             foreground="#555555",
-        ).grid(row=len(fields) + 1, column=0, columnspan=2, sticky="w", pady=(6, 10))
+        ).grid(row=len(fields) + 2, column=0, columnspan=2, sticky="w", pady=(6, 10))
         buttons = ttk.Frame(frame)
-        buttons.grid(row=len(fields) + 2, column=0, columnspan=2, sticky="e")
+        buttons.grid(row=len(fields) + 3, column=0, columnspan=2, sticky="e")
         ttk.Button(buttons, text="Cancelar", command=self.destroy).pack(side="right", padx=(6, 0))
         ttk.Button(buttons, text="Aceptar", command=self._accept).pack(side="right")
         self.bind("<Return>", lambda _event: self._accept())
@@ -165,6 +181,7 @@ class RuleDialog(tk.Toplevel):
                 days = []
                 grace_days = None
                 grace_type = None
+                self.weekend_until_monday.set(False)
             self.result = {
                 "regla_fecha_corte": "SEMANAL" if self.weekly else self.cutoff_rule.get(),
                 "dia_semana_corte": cutoff_weekday,
@@ -177,6 +194,7 @@ class RuleDialog(tk.Toplevel):
                 "tipo_plazo": grace_type,
                 "mes_ancla": anchor_month,
                 "excluir_ultimo_dia_mes": self.exclude_last_day_month.get(),
+                "fin_semana_hasta_lunes": self.weekend_until_monday.get(),
             }
         except ValueError as exc:
             messagebox.showerror("Regla inválida", str(exc), parent=self)
@@ -282,6 +300,11 @@ class ReportDialog(tk.Toplevel):
         )
         grace = rule.get("dias_plazo")
         grace_text = "Lun 12:00" if weekly else ("-" if grace is None else str(grace))
+        exceptions = []
+        if rule.get("excluir_ultimo_dia_mes"):
+            exceptions.append("Último día mes")
+        if rule.get("fin_semana_hasta_lunes"):
+            exceptions.append("Fin de semana")
         return (
             "SEMANAL" if weekly else rule.get("regla_fecha_corte", ""),
             str(cutoff),
@@ -290,7 +313,7 @@ class ReportDialog(tk.Toplevel):
             str(rule.get("ocurrencias_requeridas", 1)),
             grace_text,
             str(rule.get("frecuencia_meses", 1)),
-            "Último día mes" if rule.get("excluir_ultimo_dia_mes") else "-",
+            " / ".join(exceptions) or "-",
         )
 
     def _refresh_rules(self) -> None:

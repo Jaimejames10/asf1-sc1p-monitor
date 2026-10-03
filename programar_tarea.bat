@@ -1,8 +1,8 @@
 @echo off
 REM ============================================================
-REM  Programa el Monitor ASFI para ejecutarse automáticamente
-REM  al iniciar sesión en Windows (Task Scheduler)
-REM  Ejecutar como Administrador
+REM Programa el agente ASFI para ejecutarse automaticamente
+REM al iniciar sesion en Windows (Task Scheduler).
+REM El instalador Inno Setup configura esto automaticamente.
 REM ============================================================
 
 echo.
@@ -11,14 +11,20 @@ echo.
 
 set "SCRIPT_DIR=%~dp0"
 set "TAREA_NOMBRE=ASFI_SCIP_Monitor"
+set "AGENTE=%SCRIPT_DIR%dist\ASFI_Monitor_Agent\ASFI_Monitor_Agent.exe"
+set "COMANDO=\"%AGENTE%\""
+
+if not exist "%AGENTE%" (
+    set "COMANDO=pythonw \"%SCRIPT_DIR%asfi_monitor_agent.py\""
+)
 
 REM Eliminar tarea anterior si existe
 schtasks /delete /tn "%TAREA_NOMBRE%" /f >nul 2>&1
 
-REM Crear nueva tarea: ejecutar al iniciar sesión + cada 15 minutos
+REM Crear tarea al iniciar sesion con dos minutos de espera
 schtasks /create ^
     /tn "%TAREA_NOMBRE%" ^
-    /tr "python \"%SCRIPT_DIR%asfi_monitor.py\"" ^
+    /tr "%COMANDO%" ^
     /sc ONLOGON ^
     /delay 0002:00 ^
     /ru "%USERNAME%" ^
@@ -33,10 +39,8 @@ if errorlevel 1 (
 
 echo [OK] Tarea "%TAREA_NOMBRE%" creada exitosamente.
 echo.
-echo La tarea se ejecutará automáticamente al iniciar sesión en Windows.
-echo El monitor revisará los reportes cada 15 minutos (configurable en asfi_monitor.py).
-echo.
+echo La tarea se ejecutara automaticamente al iniciar sesion.
 echo Para administrar la tarea: Programador de Tareas ^> Biblioteca ^> %TAREA_NOMBRE%
-echo Para eliminar la tarea: schtasks /delete /tn "%TAREA_NOMBRE%" /f
+echo Para eliminarla: schtasks /delete /tn "%TAREA_NOMBRE%" /f
 echo.
 pause

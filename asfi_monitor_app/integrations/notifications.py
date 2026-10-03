@@ -3,8 +3,14 @@
 from __future__ import annotations
 
 import logging
+import html
+import os
 from pathlib import Path
+import subprocess
 from typing import Optional
+
+
+APP_USER_MODEL_ID = "ASFI.Monitor"
 
 
 def notificar(
@@ -27,24 +33,36 @@ def notificar(
     titulo_ps = titulo_limpio.replace("'", "''")
     mensaje_ps = mensaje_limpio.replace("'", "''")
 
-    def metodo_messagebox():
+    def metodo_toast_nativo():
         try:
-            import subprocess
-
+            if os.name != "nt":
+                return False
+            toast_title = html.escape(titulo_limpio, quote=True)
+            toast_message = html.escape(mensaje_limpio, quote=True).replace("\n", "&#10;")
             ps_script = f"""
-            [void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms')
-            [System.Windows.Forms.MessageBox]::Show('{mensaje_ps}', '{titulo_ps}', [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning)
+            [void][Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime]
+            [void][Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType = WindowsRuntime]
+            $xml = New-Object Windows.Data.Xml.Dom.XmlDocument
+            $xml.LoadXml('<toast><visual><binding template="ToastGeneric"><text>{toast_title}</text><text>{toast_message}</text></binding></visual></toast>')
+            $toast = New-Object Windows.UI.Notifications.ToastNotification $xml
+            $notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('{APP_USER_MODEL_ID}')
+            $notifier.Show($toast)
             """
-            subprocess.run(
-                ["powershell", "-NoProfile", "-WindowStyle", "Normal", "-Command", ps_script],
-                timeout=120,
+            flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+            result = subprocess.run(
+                ["powershell.exe", "-NoProfile", "-NonInteractive", "-WindowStyle", "Hidden", "-Command", ps_script],
+                timeout=15,
                 capture_output=True,
                 text=True,
+                creationflags=flags,
             )
-            log.debug("Notificacion enviada via PowerShell MessageBox")
-            return True
+            if result.returncode == 0:
+                log.debug("Notificacion enviada via Windows Toast nativo")
+                return True
+            log.debug("Windows Toast nativo devolvio codigo %s", result.returncode)
+            return False
         except Exception as exc:
-            log.debug(f"PowerShell MessageBox: {type(exc).__name__}")
+            log.debug(f"Windows Toast nativo: {type(exc).__name__}")
             return False
 
     def metodo_plyer():
@@ -67,8 +85,6 @@ def notificar(
 
     def metodo_ballontip():
         try:
-            import subprocess
-
             duracion_ms = 15000 if urgente else 10000
             espera_s = 16 if urgente else 11
             if icon_path:
@@ -88,13 +104,13 @@ def notificar(
             Start-Sleep -Seconds {espera_s}
             $n.Visible = $False
             """
-            subprocess.run(
+            subprocess.Popen(
                 ["powershell", "-NoProfile", "-WindowStyle", "Hidden", "-Command", ps_script],
-                timeout=120,
-                capture_output=True,
-                text=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
             )
-            log.debug(f"Notificacion enviada via PowerShell BalloonTip ({duracion_ms}ms)")
+            log.debug(f"Notificacion enviada via fallback BalloonTip ({duracion_ms}ms)")
             return True
         except Exception as exc:
             log.debug(f"PowerShell BalloonTip: {type(exc).__name__}")
@@ -102,8 +118,8 @@ def notificar(
 
     if urgente:
         log.info("[URGENTE] Enviando notificacion por un metodo disponible...")
-        if metodo_ballontip() or metodo_plyer() or metodo_messagebox():
+        if metodo_toast_nativo() or metodo_plyer() or metodo_ballontip():
             return
-    elif metodo_ballontip() or metodo_plyer() or metodo_messagebox():
+    elif metodo_toast_nativo() or metodo_plyer() or metodo_ballontip():
         return
     log.warning(f"No se pudo mostrar notificacion: {titulo}")

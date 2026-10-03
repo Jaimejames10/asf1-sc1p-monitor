@@ -4157,3 +4157,536 @@ L?mite de env?o: 2026-09-16 12:00:00
 2026-09-16 13:32:30,665 [INFO] Revisión completada. Próxima en 15 min.
 2026-09-16 13:43:42,475 [INFO] Monitor detenido por el usuario.
 2026-09-16 13:43:42,479 [INFO] [NOTIFICACION] ASFI/SCIP Monitor detenido: El monitoreo fue detenido manualmente.
+2026-09-16 13:59:10,848 [INFO] Reporte subsanado por duplicado exitoso: Reporte de Prueba (, ocurrencia=única)
+2026-09-16 13:59:10,902 [INFO] Reporte subsanado por duplicado exitoso: Reporte de Prueba (2026-09-02, ocurrencia=1)
+2026-09-16 13:59:10,966 [INFO] ============================================================
+2026-09-16 13:59:10,966 [INFO] Iniciando revisión: 2026-09-03 13:00:00
+2026-09-16 13:59:10,992 [INFO] Rangos de consulta: 31/8/2026 a 31/8/2026, 2/9/2026 a 2/9/2026
+2026-09-16 13:59:11,017 [INFO] Reporte exitoso tardío resuelto sin alerta: Reporte de transacciones relativas a la compra de activos virtuales
+2026-09-16 13:59:11,017 [INFO] Validando obligaciones configuradas para 2/9/2026...
+2026-09-16 13:59:11,017 [WARNING] ⚠️  Reportes diarios FALTANTES: ['Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario']
+2026-09-16 13:59:11,017 [WARNING] ⚠️ Reportes semanales VENCIDOS: ['CS - Cartera Semanal', 'S001-S005 IF - Semanal Reportes Liquidez', 'Solicitud de Créditos - PREAMyPes - Semanal']
+2026-09-16 13:59:11,017 [WARNING] ⚠️ Reportes mensuales FALTANTES: ['Detalle de Créditos - CAPROSEN', 'M019 IF - Mensual Tasas Pasivas', 'MB01-MB20 Mensual Balance', 'Mensual Solicitudes de Créditos - PEDAEEL', 'Solicitud de Créditos - PREAMyPes - Mensual']
+2026-09-16 13:59:11,017 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-16 13:59:11,018 [INFO] Estado de los reportes (1 ✅ | 0 ❌ | 17 ⚠️ | 1 ⏱️ | 0 ⏳):
+2026-09-16 13:59:11,018 [INFO]   ✅ Reporte de transacciones relativas a la compra de activos virtuales (TEST | corte 31/8/2026)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ CS - Cartera Semanal (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ S001-S005 IF - Semanal Reportes Liquidez (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ Solicitud de Créditos - PREAMyPes - Semanal (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ Detalle de Créditos - CAPROSEN (MENSUAL FALTANTE)
+2026-09-16 13:59:11,018 [INFO]   ⚠️ M019 IF - Mensual Tasas Pasivas (MENSUAL FALTANTE)
+2026-09-16 13:59:11,019 [INFO]   ⚠️ MB01-MB20 Mensual Balance (MENSUAL FALTANTE)
+2026-09-16 13:59:11,019 [INFO]   ⚠️ Mensual Solicitudes de Créditos - PEDAEEL (MENSUAL FALTANTE)
+2026-09-16 13:59:11,019 [INFO]   ⚠️ Solicitud de Créditos - PREAMyPes - Mensual (MENSUAL FALTANTE)
+2026-09-16 13:59:11,019 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-16 13:59:11,019 [INFO] Resumen: 1 exitosos | 0 pendientes | 0 errores | 17 faltantes | 1 tardíos | 0 sin enviar (dentro de plazo)
+2026-09-16 13:59:11,019 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-16 14:02:30,702 [INFO] Reporte subsanado por duplicado exitoso: Reporte de Prueba (, ocurrencia=única)
+2026-09-16 14:02:30,768 [INFO] Reporte subsanado por duplicado exitoso: Reporte de Prueba (2026-09-02, ocurrencia=1)
+2026-09-16 14:02:30,842 [INFO] ============================================================
+2026-09-16 14:02:30,842 [INFO] Iniciando revisión: 2026-09-03 13:00:00
+2026-09-16 14:02:30,867 [INFO] Rangos de consulta: 31/8/2026 a 31/8/2026, 2/9/2026 a 2/9/2026
+2026-09-16 14:02:30,890 [INFO] Reporte exitoso tardío resuelto sin alerta: Reporte de transacciones relativas a la compra de activos virtuales
+2026-09-16 14:02:30,890 [INFO] Validando obligaciones configuradas para 2/9/2026...
+2026-09-16 14:02:30,891 [WARNING] ⚠️  Reportes diarios FALTANTES: ['Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario']
+2026-09-16 14:02:30,892 [WARNING] ⚠️ Reportes semanales VENCIDOS: ['CS - Cartera Semanal', 'S001-S005 IF - Semanal Reportes Liquidez', 'Solicitud de Créditos - PREAMyPes - Semanal']
+2026-09-16 14:02:30,893 [WARNING] ⚠️ Reportes mensuales FALTANTES: ['Detalle de Créditos - CAPROSEN', 'M019 IF - Mensual Tasas Pasivas', 'MB01-MB20 Mensual Balance', 'Mensual Solicitudes de Créditos - PEDAEEL', 'Solicitud de Créditos - PREAMyPes - Mensual']
+2026-09-16 14:02:30,893 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-16 14:02:30,894 [INFO] Estado de los reportes (1 ✅ | 0 ❌ | 17 ⚠️ | 1 ⏱️ | 0 ⏳):
+2026-09-16 14:02:30,894 [INFO]   ✅ Reporte de transacciones relativas a la compra de activos virtuales (TEST | corte 31/8/2026)
+2026-09-16 14:02:30,894 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 14:02:30,894 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 14:02:30,895 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 14:02:30,895 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 14:02:30,895 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 14:02:30,895 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 14:02:30,895 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 14:02:30,895 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 14:02:30,895 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 14:02:30,895 [INFO]   ⚠️ CS - Cartera Semanal (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-16 14:02:30,896 [INFO]   ⚠️ S001-S005 IF - Semanal Reportes Liquidez (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-16 14:02:30,896 [INFO]   ⚠️ Solicitud de Créditos - PREAMyPes - Semanal (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-16 14:02:30,896 [INFO]   ⚠️ Detalle de Créditos - CAPROSEN (MENSUAL FALTANTE)
+2026-09-16 14:02:30,896 [INFO]   ⚠️ M019 IF - Mensual Tasas Pasivas (MENSUAL FALTANTE)
+2026-09-16 14:02:30,896 [INFO]   ⚠️ MB01-MB20 Mensual Balance (MENSUAL FALTANTE)
+2026-09-16 14:02:30,896 [INFO]   ⚠️ Mensual Solicitudes de Créditos - PEDAEEL (MENSUAL FALTANTE)
+2026-09-16 14:02:30,896 [INFO]   ⚠️ Solicitud de Créditos - PREAMyPes - Mensual (MENSUAL FALTANTE)
+2026-09-16 14:02:30,896 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-16 14:02:30,896 [INFO] Resumen: 1 exitosos | 0 pendientes | 0 errores | 17 faltantes | 1 tardíos | 0 sin enviar (dentro de plazo)
+2026-09-16 14:02:30,897 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-16 15:58:14,478 [INFO] ============================================================
+2026-09-16 15:58:14,479 [INFO] Iniciando revisión: 2026-09-16 15:58:14
+2026-09-16 15:58:14,537 [INFO] Rangos de consulta: 15/9/2026 a 15/9/2026
+2026-09-16 15:58:15,771 [INFO] Fechas a consultar: 15/9/2026 a 15/9/2026
+2026-09-16 15:58:19,470 [INFO] Iniciando navegador Chromium...
+2026-09-16 15:58:28,300 [INFO] Abriendo login: https://appweb.asfi.gob.bo/SCIP/Login.aspx?ReturnUrl=%2fSCIP%2fmControlPlazos%2fControlPlazos.aspx
+2026-09-16 15:58:34,457 [INFO] Ingresando credenciales...
+2026-09-16 15:58:52,018 [INFO] Login exitoso
+2026-09-16 15:59:08,450 [INFO] Procesando pagina 1 de la tabla...
+2026-09-16 15:59:08,480 [INFO] Filas encontradas en pagina 1: 10
+2026-09-16 15:59:09,286 [INFO] Navegador cerrado.
+2026-09-16 15:59:09,314 [INFO] Filas fuera de las obligaciones vigentes ignoradas: 1
+2026-09-16 15:59:09,360 [INFO] Validando obligaciones configuradas para 15/9/2026...
+2026-09-16 15:59:09,362 [WARNING] ⚠️  Reportes diarios FALTANTES: ['Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario', 'Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario']
+2026-09-16 15:59:09,362 [INFO] [NOTIFICACION] ?? ASFI/SCIP Monitor - 17 reportes FALTANTES: Fecha: 15/9/2026
+
+  ? Ampliaci?n de plazo de reclamos de primera instancia
+  ? D001-D005 IF - Diario
+2026-09-16 15:59:09,362 [INFO] [URGENTE] Enviando notificacion por un metodo disponible...
+2026-09-16 15:59:25,990 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-16 15:59:25,994 [INFO] Estado de los reportes (9 ✅ | 0 ❌ | 17 ⚠️ | 1 ⏱️ | 0 ⏳):
+2026-09-16 15:59:25,994 [INFO]   ✅ D007 IF - Diario Operaciones Interbancarias (CCM | corte 2026-09-15)
+2026-09-16 15:59:25,994 [INFO]   ✅ D006 IF - Diario Tasas de Interés Activas (CCM | corte 2026-09-15)
+2026-09-16 15:59:25,994 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-15)
+2026-09-16 15:59:25,994 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-15)
+2026-09-16 15:59:25,995 [INFO]   ✅ Ampliación de plazo de reclamos de primera instancia (CCM | corte 2026-09-15)
+2026-09-16 15:59:25,995 [INFO]   ✅ Reporte de Transacciones con el Exterior Diario (CCM | corte 2026-09-15)
+2026-09-16 15:59:25,995 [INFO]   ✅ D001-D005 IF - Diario Encaje (CCM | corte 2026-09-15)
+2026-09-16 15:59:25,995 [INFO]   ✅ D012 - Créditos refinanciados y/o reprogramados (CCM | corte 2026-09-15)
+2026-09-16 15:59:25,995 [INFO]   ✅ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (CCM | corte 2026-09-15)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 15:59:25,995 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 15:59:25,996 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 15:59:25,996 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 15:59:25,996 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 15:59:25,996 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 15:59:25,996 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-16 15:59:25,996 [INFO] Resumen: 9 exitosos | 0 pendientes | 0 errores | 17 faltantes | 1 tardíos | 0 sin enviar (dentro de plazo)
+2026-09-16 15:59:25,999 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-16 16:02:00,623 [INFO] ============================================================
+2026-09-16 16:02:00,623 [INFO] ASFI SCIP Monitor iniciado
+2026-09-16 16:02:00,623 [INFO]   Usuario  : thomas.clavijo@comarapa.coop
+2026-09-16 16:02:00,623 [INFO]   Intervalo: 15 minutos
+2026-09-16 16:02:00,623 [INFO]   Headless : True
+2026-09-16 16:02:00,623 [INFO]   Días atrás: 1
+2026-09-16 16:02:00,623 [INFO]   Salida detallada: False
+2026-09-16 16:02:00,623 [INFO] ============================================================
+2026-09-16 16:02:00,856 [INFO] [NOTIFICACION] ASFI/SCIP Monitor iniciado: Monitoreando reportes cada 15 min.
+2026-09-16 16:02:12,341 [INFO] ============================================================
+2026-09-16 16:02:12,341 [INFO] Iniciando revisión: 2026-09-16 16:02:12
+2026-09-16 16:02:12,390 [INFO] Rangos de consulta: 15/9/2026 a 15/9/2026
+2026-09-16 16:02:12,391 [INFO] Fechas a consultar: 15/9/2026 a 15/9/2026
+2026-09-16 16:02:13,321 [INFO] Iniciando navegador Chromium...
+2026-09-16 16:02:17,621 [INFO] Abriendo login: https://appweb.asfi.gob.bo/SCIP/Login.aspx?ReturnUrl=%2fSCIP%2fmControlPlazos%2fControlPlazos.aspx
+2026-09-16 16:02:20,621 [INFO] Ingresando credenciales...
+2026-09-16 16:02:25,446 [INFO] Login exitoso
+2026-09-16 16:02:44,220 [INFO] Procesando pagina 1 de la tabla...
+2026-09-16 16:02:44,244 [INFO] Filas encontradas en pagina 1: 10
+2026-09-16 16:02:44,943 [INFO] Navegador cerrado.
+2026-09-16 16:02:44,961 [INFO] Filas fuera de las obligaciones vigentes ignoradas: 1
+2026-09-16 16:02:45,005 [INFO] Validando obligaciones configuradas para 15/9/2026...
+2026-09-16 16:02:45,005 [WARNING] ⚠️  Reportes diarios FALTANTES: ['Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario', 'Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario']
+2026-09-16 16:02:45,005 [INFO] [NOTIFICACION] ?? ASFI/SCIP Monitor - 17 reportes FALTANTES: Fecha: 15/9/2026
+
+  ? Ampliaci?n de plazo de reclamos de primera instancia
+  ? D001-D005 IF - Diario
+2026-09-16 16:02:45,005 [INFO] [URGENTE] Enviando notificacion por un metodo disponible...
+2026-09-16 16:03:01,614 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-16 16:03:01,620 [INFO] Estado de los reportes (9 ✅ | 0 ❌ | 17 ⚠️ | 1 ⏱️ | 0 ⏳):
+2026-09-16 16:03:01,620 [INFO]   ✅ D007 IF - Diario Operaciones Interbancarias (CCM | corte 2026-09-15)
+2026-09-16 16:03:01,621 [INFO]   ✅ D006 IF - Diario Tasas de Interés Activas (CCM | corte 2026-09-15)
+2026-09-16 16:03:01,621 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-15)
+2026-09-16 16:03:01,621 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-15)
+2026-09-16 16:03:01,621 [INFO]   ✅ Ampliación de plazo de reclamos de primera instancia (CCM | corte 2026-09-15)
+2026-09-16 16:03:01,621 [INFO]   ✅ Reporte de Transacciones con el Exterior Diario (CCM | corte 2026-09-15)
+2026-09-16 16:03:01,622 [INFO]   ✅ D001-D005 IF - Diario Encaje (CCM | corte 2026-09-15)
+2026-09-16 16:03:01,622 [INFO]   ✅ D012 - Créditos refinanciados y/o reprogramados (CCM | corte 2026-09-15)
+2026-09-16 16:03:01,622 [INFO]   ✅ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (CCM | corte 2026-09-15)
+2026-09-16 16:03:01,622 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 16:03:01,623 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 16:03:01,624 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 16:03:01,624 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:03:01,624 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 16:03:01,624 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 16:03:01,624 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 16:03:01,624 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-16 16:03:01,624 [INFO] Resumen: 9 exitosos | 0 pendientes | 0 errores | 17 faltantes | 1 tardíos | 0 sin enviar (dentro de plazo)
+2026-09-16 16:03:01,626 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-16 16:03:01,628 [INFO] Scheduler activo. Revisando cada 15 minutos.
+2026-09-16 16:03:01,628 [INFO] Presionar Ctrl+C para detener.
+2026-09-16 16:03:33,864 [INFO] Monitor detenido por el usuario.
+2026-09-16 16:03:33,865 [INFO] [NOTIFICACION] ASFI/SCIP Monitor detenido: El monitoreo fue detenido manualmente.
+2026-09-16 16:03:55,976 [INFO] ============================================================
+2026-09-16 16:03:55,977 [INFO] ASFI SCIP Monitor iniciado
+2026-09-16 16:03:55,977 [INFO]   Usuario  : thomas.clavijo@comarapa.coop
+2026-09-16 16:03:55,978 [INFO]   Intervalo: 15 minutos
+2026-09-16 16:03:55,978 [INFO]   Headless : True
+2026-09-16 16:03:55,979 [INFO]   Días atrás: 1
+2026-09-16 16:03:55,979 [INFO]   Salida detallada: True
+2026-09-16 16:03:55,979 [INFO] ============================================================
+2026-09-16 16:03:56,146 [INFO] [NOTIFICACION] ASFI/SCIP Monitor iniciado: Monitoreando reportes cada 15 min.
+2026-09-16 16:04:07,532 [INFO] ============================================================
+2026-09-16 16:04:07,533 [INFO] Iniciando revisión: 2026-09-16 16:04:07
+2026-09-16 16:04:07,574 [INFO] Rangos de consulta: 15/9/2026 a 15/9/2026
+2026-09-16 16:04:07,575 [INFO] Fechas a consultar: 15/9/2026 a 15/9/2026
+2026-09-16 16:04:08,490 [INFO] Iniciando navegador Chromium...
+2026-09-16 16:04:13,748 [INFO] Abriendo login: https://appweb.asfi.gob.bo/SCIP/Login.aspx?ReturnUrl=%2fSCIP%2fmControlPlazos%2fControlPlazos.aspx
+2026-09-16 16:04:16,999 [INFO] Ingresando credenciales...
+2026-09-16 16:04:21,697 [INFO] Login exitoso
+2026-09-16 16:04:38,927 [INFO] Procesando pagina 1 de la tabla...
+2026-09-16 16:04:38,960 [INFO] Filas encontradas en pagina 1: 10
+2026-09-16 16:04:39,712 [INFO] Navegador cerrado.
+2026-09-16 16:04:39,732 [INFO] Filas fuera de las obligaciones vigentes ignoradas: 1
+2026-09-16 16:04:39,792 [INFO] Validando obligaciones configuradas para 15/9/2026...
+2026-09-16 16:04:39,793 [WARNING] ⚠️  Reportes diarios FALTANTES: ['Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario', 'Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario']
+2026-09-16 16:04:39,793 [INFO] [NOTIFICACION] ?? ASFI/SCIP Monitor - 17 reportes FALTANTES: Fecha: 15/9/2026
+
+  ? Ampliaci?n de plazo de reclamos de primera instancia
+  ? D001-D005 IF - Diario
+2026-09-16 16:04:39,793 [INFO] [URGENTE] Enviando notificacion por un metodo disponible...
+2026-09-16 16:04:56,259 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-16 16:04:56,268 [INFO] Estado de los reportes (9 ✅ | 0 ❌ | 17 ⚠️ | 1 ⏱️ | 0 ⏳):
+2026-09-16 16:04:56,269 [INFO]   ✅ D007 IF - Diario Operaciones Interbancarias (CCM | corte 2026-09-15)
+2026-09-16 16:04:56,269 [INFO]   ✅ D006 IF - Diario Tasas de Interés Activas (CCM | corte 2026-09-15)
+2026-09-16 16:04:56,269 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-15)
+2026-09-16 16:04:56,270 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-15)
+2026-09-16 16:04:56,270 [INFO]   ✅ Ampliación de plazo de reclamos de primera instancia (CCM | corte 2026-09-15)
+2026-09-16 16:04:56,270 [INFO]   ✅ Reporte de Transacciones con el Exterior Diario (CCM | corte 2026-09-15)
+2026-09-16 16:04:56,271 [INFO]   ✅ D001-D005 IF - Diario Encaje (CCM | corte 2026-09-15)
+2026-09-16 16:04:56,272 [INFO]   ✅ D012 - Créditos refinanciados y/o reprogramados (CCM | corte 2026-09-15)
+2026-09-16 16:04:56,273 [INFO]   ✅ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (CCM | corte 2026-09-15)
+2026-09-16 16:04:56,274 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 16:04:56,276 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 16:04:56,276 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 16:04:56,277 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 16:04:56,278 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:04:56,278 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:04:56,279 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 16:04:56,279 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 16:04:56,279 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 16:04:56,280 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 16:04:56,280 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 16:04:56,280 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 16:04:56,281 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 16:04:56,281 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:04:56,281 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 16:04:56,282 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 16:04:56,282 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 16:04:56,283 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-16 16:04:56,284 [INFO] Resumen: 9 exitosos | 0 pendientes | 0 errores | 17 faltantes | 1 tardíos | 0 sin enviar (dentro de plazo)
+2026-09-16 16:04:56,286 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-16 16:04:56,289 [INFO] Scheduler activo. Revisando cada 15 minutos.
+2026-09-16 16:04:56,289 [INFO] Presionar Ctrl+C para detener.
+2026-09-16 16:17:59,593 [INFO] Reporte subsanado por duplicado exitoso: Reporte de Prueba (, ocurrencia=única)
+2026-09-16 16:17:59,632 [INFO] Reporte subsanado por duplicado exitoso: Reporte de Prueba (2026-09-02, ocurrencia=1)
+2026-09-16 16:17:59,676 [INFO] ============================================================
+2026-09-16 16:17:59,676 [INFO] Iniciando revisión: 2026-09-03 13:00:00
+2026-09-16 16:17:59,691 [INFO] Rangos de consulta: 31/8/2026 a 31/8/2026, 2/9/2026 a 2/9/2026
+2026-09-16 16:17:59,707 [INFO] Reporte exitoso tardío resuelto sin alerta: Reporte de transacciones relativas a la compra de activos virtuales
+2026-09-16 16:17:59,707 [INFO] Validando obligaciones configuradas para 2/9/2026...
+2026-09-16 16:17:59,707 [WARNING] ⚠️  Reportes diarios FALTANTES: ['Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario']
+2026-09-16 16:17:59,707 [WARNING] ⚠️ Reportes semanales VENCIDOS: ['CS - Cartera Semanal', 'S001-S005 IF - Semanal Reportes Liquidez', 'Solicitud de Créditos - PREAMyPes - Semanal']
+2026-09-16 16:17:59,707 [WARNING] ⚠️ Reportes mensuales FALTANTES: ['Detalle de Créditos - CAPROSEN', 'M019 IF - Mensual Tasas Pasivas', 'MB01-MB20 Mensual Balance', 'Mensual Solicitudes de Créditos - PEDAEEL', 'Solicitud de Créditos - PREAMyPes - Mensual']
+2026-09-16 16:17:59,707 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-16 16:17:59,708 [INFO] Estado de los reportes (1 ✅ | 0 ❌ | 17 ⚠️ | 1 ⏱️ | 0 ⏳):
+2026-09-16 16:17:59,708 [INFO]   ✅ Reporte de transacciones relativas a la compra de activos virtuales (TEST | corte 31/8/2026)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ CS - Cartera Semanal (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ S001-S005 IF - Semanal Reportes Liquidez (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ Solicitud de Créditos - PREAMyPes - Semanal (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ Detalle de Créditos - CAPROSEN (MENSUAL FALTANTE)
+2026-09-16 16:17:59,708 [INFO]   ⚠️ M019 IF - Mensual Tasas Pasivas (MENSUAL FALTANTE)
+2026-09-16 16:17:59,709 [INFO]   ⚠️ MB01-MB20 Mensual Balance (MENSUAL FALTANTE)
+2026-09-16 16:17:59,709 [INFO]   ⚠️ Mensual Solicitudes de Créditos - PEDAEEL (MENSUAL FALTANTE)
+2026-09-16 16:17:59,709 [INFO]   ⚠️ Solicitud de Créditos - PREAMyPes - Mensual (MENSUAL FALTANTE)
+2026-09-16 16:17:59,709 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-16 16:17:59,709 [INFO] Resumen: 1 exitosos | 0 pendientes | 0 errores | 17 faltantes | 1 tardíos | 0 sin enviar (dentro de plazo)
+2026-09-16 16:17:59,709 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-16 16:19:56,306 [INFO] ============================================================
+2026-09-16 16:19:56,307 [INFO] Iniciando revisión: 2026-09-16 16:19:56
+2026-09-16 16:19:56,385 [INFO] Rangos de consulta: 15/9/2026 a 15/9/2026
+2026-09-16 16:19:56,386 [INFO] Fechas a consultar: 15/9/2026 a 15/9/2026
+2026-09-16 16:19:57,345 [INFO] Iniciando navegador Chromium...
+2026-09-16 16:20:05,560 [INFO] Abriendo login: https://appweb.asfi.gob.bo/SCIP/Login.aspx?ReturnUrl=%2fSCIP%2fmControlPlazos%2fControlPlazos.aspx
+2026-09-16 16:20:11,447 [INFO] Ingresando credenciales...
+2026-09-16 16:20:16,376 [INFO] Login exitoso
+2026-09-16 16:20:32,951 [INFO] Procesando pagina 1 de la tabla...
+2026-09-16 16:20:33,005 [INFO] Filas encontradas en pagina 1: 10
+2026-09-16 16:20:36,423 [INFO] Navegador cerrado.
+2026-09-16 16:20:36,500 [INFO] Filas fuera de las obligaciones vigentes ignoradas: 1
+2026-09-16 16:20:36,750 [INFO] Validando obligaciones configuradas para 15/9/2026...
+2026-09-16 16:20:36,752 [WARNING] ⚠️  Reportes diarios FALTANTES: ['Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario', 'Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario']
+2026-09-16 16:20:36,752 [INFO] [NOTIFICACION] ?? ASFI/SCIP Monitor - 17 reportes FALTANTES: Fecha: 15/9/2026
+
+  ? Ampliaci?n de plazo de reclamos de primera instancia
+  ? D001-D005 IF - Diario
+2026-09-16 16:20:36,753 [INFO] [URGENTE] Enviando notificacion por un metodo disponible...
+2026-09-16 16:20:53,812 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-16 16:20:53,815 [INFO] Estado de los reportes (9 ✅ | 0 ❌ | 17 ⚠️ | 1 ⏱️ | 0 ⏳):
+2026-09-16 16:20:53,816 [INFO]   ✅ D007 IF - Diario Operaciones Interbancarias (CCM | corte 2026-09-15)
+2026-09-16 16:20:53,816 [INFO]   ✅ D006 IF - Diario Tasas de Interés Activas (CCM | corte 2026-09-15)
+2026-09-16 16:20:53,816 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-15)
+2026-09-16 16:20:53,816 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-15)
+2026-09-16 16:20:53,816 [INFO]   ✅ Ampliación de plazo de reclamos de primera instancia (CCM | corte 2026-09-15)
+2026-09-16 16:20:53,817 [INFO]   ✅ Reporte de Transacciones con el Exterior Diario (CCM | corte 2026-09-15)
+2026-09-16 16:20:53,817 [INFO]   ✅ D001-D005 IF - Diario Encaje (CCM | corte 2026-09-15)
+2026-09-16 16:20:53,817 [INFO]   ✅ D012 - Créditos refinanciados y/o reprogramados (CCM | corte 2026-09-15)
+2026-09-16 16:20:53,817 [INFO]   ✅ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (CCM | corte 2026-09-15)
+2026-09-16 16:20:53,817 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 16:20:53,817 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 16:20:53,818 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 16:20:53,818 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 16:20:53,818 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:20:53,818 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:20:53,819 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 16:20:53,819 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 16:20:53,820 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 16:20:53,820 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-16 16:20:53,820 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-16 16:20:53,820 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-16 16:20:53,821 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-16 16:20:53,821 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-16 16:20:53,821 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-16 16:20:53,822 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-16 16:20:53,822 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-16 16:20:53,822 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-16 16:20:53,822 [INFO] Resumen: 9 exitosos | 0 pendientes | 0 errores | 17 faltantes | 1 tardíos | 0 sin enviar (dentro de plazo)
+2026-09-16 16:20:53,824 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-17 08:26:04,227 [INFO] ============================================================
+2026-09-17 08:26:04,228 [INFO] ASFI SCIP Monitor iniciado
+2026-09-17 08:26:04,229 [INFO]   Usuario  : thomas.clavijo@comarapa.coop
+2026-09-17 08:26:04,229 [INFO]   Intervalo: 15 minutos
+2026-09-17 08:26:04,229 [INFO]   Headless : True
+2026-09-17 08:26:04,229 [INFO]   Días atrás: 1
+2026-09-17 08:26:04,229 [INFO]   Salida detallada: False
+2026-09-17 08:26:04,229 [INFO] ============================================================
+2026-09-17 08:26:04,999 [INFO] [NOTIFICACION] ASFI/SCIP Monitor iniciado: Monitoreando reportes cada 15 min.
+2026-09-17 08:26:16,908 [INFO] ============================================================
+2026-09-17 08:26:16,908 [INFO] Iniciando revisión: 2026-09-17 08:26:16
+2026-09-17 08:26:16,964 [INFO] Rangos de consulta: 16/9/2026 a 16/9/2026
+2026-09-17 08:26:16,964 [INFO] Fechas a consultar: 16/9/2026 a 16/9/2026
+2026-09-17 08:26:21,866 [INFO] Iniciando navegador Chromium...
+2026-09-17 08:26:33,237 [INFO] Abriendo login: https://appweb.asfi.gob.bo/SCIP/Login.aspx?ReturnUrl=%2fSCIP%2fmControlPlazos%2fControlPlazos.aspx
+2026-09-17 08:26:38,779 [INFO] Ingresando credenciales...
+2026-09-17 08:26:43,537 [INFO] Login exitoso
+2026-09-17 08:26:59,930 [INFO] Procesando pagina 1 de la tabla...
+2026-09-17 08:26:59,968 [INFO] Filas encontradas en pagina 1: 2
+2026-09-17 08:27:00,377 [INFO] Navegador cerrado.
+2026-09-17 08:27:00,419 [INFO] Filas fuera de las obligaciones vigentes ignoradas: 1
+2026-09-17 08:27:00,538 [INFO] Validando obligaciones configuradas para 16/9/2026...
+2026-09-17 08:27:00,538 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-17 08:27:00,538 [INFO] Reportes diarios aún sin enviar (dentro de plazo): 8
+2026-09-17 08:27:00,538 [INFO] [NOTIFICACION] ? ASFI/SCIP Monitor - 8 reportes diarios sin enviar: Corte: 16/9/2026
+L?mite de env?o: 2026-09-17 12:00:00
+
+  ? Ampliaci?n de plazo de reclamos de primer
+2026-09-17 08:27:12,220 [INFO] Estado de los reportes (1 ✅ | 0 ❌ | 0 ⚠️ | 1 ⏱️ | 8 ⏳):
+2026-09-17 08:27:12,221 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-16)
+2026-09-17 08:27:12,221 [INFO]   ⏳ Ampliación de plazo de reclamos de primera instancia (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:27:12,221 [INFO]   ⏳ D001-D005 IF - Diario Encaje (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:27:12,221 [INFO]   ⏳ D006 IF - Diario Tasas de Interés Activas (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:27:12,221 [INFO]   ⏳ D007 IF - Diario Operaciones Interbancarias (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:27:12,221 [INFO]   ⏳ D008 IF - Diario Tipo de Cambio (envío 2) (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:27:12,221 [INFO]   ⏳ D012 - Créditos refinanciados y/o reprogramados (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:27:12,221 [INFO]   ⏳ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:27:12,221 [INFO]   ⏳ Reporte de Transacciones con el Exterior Diario (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:27:12,221 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-17 08:27:12,221 [INFO] Resumen: 1 exitosos | 0 pendientes | 0 errores | 0 faltantes | 1 tardíos | 8 sin enviar (dentro de plazo)
+2026-09-17 08:27:12,249 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-17 08:27:12,250 [INFO] Scheduler activo. Revisando cada 15 minutos.
+2026-09-17 08:27:12,250 [INFO] Presionar Ctrl+C para detener.
+2026-09-17 08:34:58,343 [INFO] ============================================================
+2026-09-17 08:34:58,343 [INFO] Iniciando revisión: 2026-09-17 08:34:58
+2026-09-17 08:34:58,391 [INFO] Rangos de consulta: 16/9/2026 a 16/9/2026
+2026-09-17 08:34:58,821 [INFO] Fechas a consultar: 16/9/2026 a 16/9/2026
+2026-09-17 08:35:02,867 [INFO] Iniciando navegador Chromium...
+2026-09-17 08:35:23,789 [INFO] Abriendo login: https://appweb.asfi.gob.bo/SCIP/Login.aspx?ReturnUrl=%2fSCIP%2fmControlPlazos%2fControlPlazos.aspx
+2026-09-17 08:35:36,924 [INFO] Ingresando credenciales...
+2026-09-17 08:35:46,752 [INFO] Login exitoso
+2026-09-17 08:36:06,584 [INFO] Procesando pagina 1 de la tabla...
+2026-09-17 08:36:06,631 [INFO] Filas encontradas en pagina 1: 2
+2026-09-17 08:36:07,139 [INFO] Navegador cerrado.
+2026-09-17 08:36:07,176 [INFO] Filas fuera de las obligaciones vigentes ignoradas: 1
+2026-09-17 08:36:07,247 [INFO] Validando obligaciones configuradas para 16/9/2026...
+2026-09-17 08:36:07,248 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-17 08:36:07,248 [INFO] Reportes diarios aún sin enviar (dentro de plazo): 8
+2026-09-17 08:36:07,248 [INFO] [NOTIFICACION] ? ASFI/SCIP Monitor - 8 reportes diarios sin enviar: Corte: 16/9/2026
+L?mite de env?o: 2026-09-17 12:00:00
+
+  ? Ampliaci?n de plazo de reclamos de primer
+2026-09-17 08:36:18,948 [INFO] Estado de los reportes (1 ✅ | 0 ❌ | 0 ⚠️ | 1 ⏱️ | 8 ⏳):
+2026-09-17 08:36:18,948 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-16)
+2026-09-17 08:36:18,948 [INFO]   ⏳ Ampliación de plazo de reclamos de primera instancia (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:36:18,948 [INFO]   ⏳ D001-D005 IF - Diario Encaje (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:36:18,948 [INFO]   ⏳ D006 IF - Diario Tasas de Interés Activas (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:36:18,948 [INFO]   ⏳ D007 IF - Diario Operaciones Interbancarias (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:36:18,948 [INFO]   ⏳ D008 IF - Diario Tipo de Cambio (envío 2) (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:36:18,948 [INFO]   ⏳ D012 - Créditos refinanciados y/o reprogramados (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:36:18,948 [INFO]   ⏳ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:36:18,949 [INFO]   ⏳ Reporte de Transacciones con el Exterior Diario (SIN ENVIAR - dentro de plazo)
+2026-09-17 08:36:18,949 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-17 08:36:18,949 [INFO] Resumen: 1 exitosos | 0 pendientes | 0 errores | 0 faltantes | 1 tardíos | 8 sin enviar (dentro de plazo)
+2026-09-17 08:36:18,951 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-17 08:46:27,662 [INFO] Reporte subsanado por duplicado exitoso: Reporte de Prueba (, ocurrencia=única)
+2026-09-17 08:46:27,858 [INFO] Reporte subsanado por duplicado exitoso: Reporte de Prueba (2026-09-02, ocurrencia=1)
+2026-09-17 08:46:27,935 [INFO] ============================================================
+2026-09-17 08:46:27,935 [INFO] Iniciando revisión: 2026-09-03 13:00:00
+2026-09-17 08:46:27,961 [INFO] Rangos de consulta: 31/8/2026 a 31/8/2026, 2/9/2026 a 2/9/2026
+2026-09-17 08:46:28,069 [INFO] Reporte exitoso tardío resuelto sin alerta: Reporte de transacciones relativas a la compra de activos virtuales
+2026-09-17 08:46:28,069 [INFO] Validando obligaciones configuradas para 2/9/2026...
+2026-09-17 08:46:28,070 [WARNING] ⚠️  Reportes diarios FALTANTES: ['Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario']
+2026-09-17 08:46:28,070 [WARNING] ⚠️ Reportes semanales VENCIDOS: ['CS - Cartera Semanal', 'S001-S005 IF - Semanal Reportes Liquidez', 'Solicitud de Créditos - PREAMyPes - Semanal']
+2026-09-17 08:46:28,070 [WARNING] ⚠️ Reportes mensuales FALTANTES: ['Detalle de Créditos - CAPROSEN', 'M019 IF - Mensual Tasas Pasivas', 'MB01-MB20 Mensual Balance', 'Mensual Solicitudes de Créditos - PEDAEEL', 'Solicitud de Créditos - PREAMyPes - Mensual']
+2026-09-17 08:46:28,071 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-17 08:46:28,071 [INFO] Estado de los reportes (1 ✅ | 0 ❌ | 17 ⚠️ | 1 ⏱️ | 0 ⏳):
+2026-09-17 08:46:28,071 [INFO]   ✅ Reporte de transacciones relativas a la compra de activos virtuales (TEST | corte 31/8/2026)
+2026-09-17 08:46:28,071 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-17 08:46:28,071 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-17 08:46:28,072 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-17 08:46:28,072 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-17 08:46:28,072 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-17 08:46:28,072 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-17 08:46:28,072 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-17 08:46:28,072 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-17 08:46:28,072 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-17 08:46:28,072 [INFO]   ⚠️ CS - Cartera Semanal (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-17 08:46:28,072 [INFO]   ⚠️ S001-S005 IF - Semanal Reportes Liquidez (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-17 08:46:28,072 [INFO]   ⚠️ Solicitud de Créditos - PREAMyPes - Semanal (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-17 08:46:28,073 [INFO]   ⚠️ Detalle de Créditos - CAPROSEN (MENSUAL FALTANTE)
+2026-09-17 08:46:28,073 [INFO]   ⚠️ M019 IF - Mensual Tasas Pasivas (MENSUAL FALTANTE)
+2026-09-17 08:46:28,073 [INFO]   ⚠️ MB01-MB20 Mensual Balance (MENSUAL FALTANTE)
+2026-09-17 08:46:28,073 [INFO]   ⚠️ Mensual Solicitudes de Créditos - PEDAEEL (MENSUAL FALTANTE)
+2026-09-17 08:46:28,073 [INFO]   ⚠️ Solicitud de Créditos - PREAMyPes - Mensual (MENSUAL FALTANTE)
+2026-09-17 08:46:28,073 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-17 08:46:28,073 [INFO] Resumen: 1 exitosos | 0 pendientes | 0 errores | 17 faltantes | 1 tardíos | 0 sin enviar (dentro de plazo)
+2026-09-17 08:46:28,073 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-17 08:48:41,860 [INFO] Reporte subsanado por duplicado exitoso: Reporte de Prueba (, ocurrencia=única)
+2026-09-17 08:48:41,984 [INFO] Reporte subsanado por duplicado exitoso: Reporte de Prueba (2026-09-02, ocurrencia=1)
+2026-09-17 08:48:42,197 [INFO] ============================================================
+2026-09-17 08:48:42,198 [INFO] Iniciando revisión: 2026-09-03 13:00:00
+2026-09-17 08:48:42,238 [INFO] Rangos de consulta: 31/8/2026 a 31/8/2026, 2/9/2026 a 2/9/2026
+2026-09-17 08:48:42,313 [INFO] Reporte exitoso tardío resuelto sin alerta: Reporte de transacciones relativas a la compra de activos virtuales
+2026-09-17 08:48:42,313 [INFO] Validando obligaciones configuradas para 2/9/2026...
+2026-09-17 08:48:42,313 [WARNING] ⚠️  Reportes diarios FALTANTES: ['Ampliación de plazo de reclamos de primera instancia', 'D001-D005 IF - Diario Encaje', 'D006 IF - Diario Tasas de Interés Activas', 'D007 IF - Diario Operaciones Interbancarias', 'D008 IF - Diario Tipo de Cambio', 'D008 IF - Diario Tipo de Cambio', 'D012 - Créditos refinanciados y/o reprogramados', 'REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA', 'Reporte de Transacciones con el Exterior Diario']
+2026-09-17 08:48:42,314 [WARNING] ⚠️ Reportes semanales VENCIDOS: ['CS - Cartera Semanal', 'S001-S005 IF - Semanal Reportes Liquidez', 'Solicitud de Créditos - PREAMyPes - Semanal']
+2026-09-17 08:48:42,314 [WARNING] ⚠️ Reportes mensuales FALTANTES: ['Detalle de Créditos - CAPROSEN', 'M019 IF - Mensual Tasas Pasivas', 'MB01-MB20 Mensual Balance', 'Mensual Solicitudes de Créditos - PEDAEEL', 'Solicitud de Créditos - PREAMyPes - Mensual']
+2026-09-17 08:48:42,314 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-17 08:48:42,315 [INFO] Estado de los reportes (1 ✅ | 0 ❌ | 17 ⚠️ | 1 ⏱️ | 0 ⏳):
+2026-09-17 08:48:42,315 [INFO]   ✅ Reporte de transacciones relativas a la compra de activos virtuales (TEST | corte 31/8/2026)
+2026-09-17 08:48:42,315 [INFO]   ⚠️ Ampliación de plazo de reclamos de primera instancia (FALTANTE)
+2026-09-17 08:48:42,315 [INFO]   ⚠️ D001-D005 IF - Diario Encaje (FALTANTE)
+2026-09-17 08:48:42,315 [INFO]   ⚠️ D006 IF - Diario Tasas de Interés Activas (FALTANTE)
+2026-09-17 08:48:42,315 [INFO]   ⚠️ D007 IF - Diario Operaciones Interbancarias (FALTANTE)
+2026-09-17 08:48:42,315 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-17 08:48:42,315 [INFO]   ⚠️ D008 IF - Diario Tipo de Cambio (FALTANTE)
+2026-09-17 08:48:42,315 [INFO]   ⚠️ D012 - Créditos refinanciados y/o reprogramados (FALTANTE)
+2026-09-17 08:48:42,315 [INFO]   ⚠️ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (FALTANTE)
+2026-09-17 08:48:42,316 [INFO]   ⚠️ Reporte de Transacciones con el Exterior Diario (FALTANTE)
+2026-09-17 08:48:42,316 [INFO]   ⚠️ CS - Cartera Semanal (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-17 08:48:42,316 [INFO]   ⚠️ S001-S005 IF - Semanal Reportes Liquidez (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-17 08:48:42,316 [INFO]   ⚠️ Solicitud de Créditos - PREAMyPes - Semanal (SEMANAL VENCIDO SIN ENVIAR)
+2026-09-17 08:48:42,316 [INFO]   ⚠️ Detalle de Créditos - CAPROSEN (MENSUAL FALTANTE)
+2026-09-17 08:48:42,316 [INFO]   ⚠️ M019 IF - Mensual Tasas Pasivas (MENSUAL FALTANTE)
+2026-09-17 08:48:42,316 [INFO]   ⚠️ MB01-MB20 Mensual Balance (MENSUAL FALTANTE)
+2026-09-17 08:48:42,316 [INFO]   ⚠️ Mensual Solicitudes de Créditos - PEDAEEL (MENSUAL FALTANTE)
+2026-09-17 08:48:42,316 [INFO]   ⚠️ Solicitud de Créditos - PREAMyPes - Mensual (MENSUAL FALTANTE)
+2026-09-17 08:48:42,316 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-17 08:48:42,316 [INFO] Resumen: 1 exitosos | 0 pendientes | 0 errores | 17 faltantes | 1 tardíos | 0 sin enviar (dentro de plazo)
+2026-09-17 08:48:42,317 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-17 08:59:56,022 [INFO] ============================================================
+2026-09-17 08:59:56,022 [INFO] Iniciando revisión: 2026-09-17 08:59:56
+2026-09-17 08:59:56,053 [INFO] Rangos de consulta: 16/9/2026 a 16/9/2026
+2026-09-17 08:59:56,328 [INFO] Fechas a consultar: 16/9/2026 a 16/9/2026
+2026-09-17 08:59:57,516 [INFO] Iniciando navegador Chromium...
+2026-09-17 09:00:03,800 [INFO] Abriendo login: https://appweb.asfi.gob.bo/SCIP/Login.aspx?ReturnUrl=%2fSCIP%2fmControlPlazos%2fControlPlazos.aspx
+2026-09-17 09:00:09,426 [INFO] Ingresando credenciales...
+2026-09-17 09:00:15,005 [INFO] Login exitoso
+2026-09-17 09:00:32,076 [INFO] Procesando pagina 1 de la tabla...
+2026-09-17 09:00:32,107 [INFO] Filas encontradas en pagina 1: 3
+2026-09-17 09:00:32,430 [INFO] Navegador cerrado.
+2026-09-17 09:00:32,464 [INFO] Filas fuera de las obligaciones vigentes ignoradas: 1
+2026-09-17 09:00:32,505 [INFO] [NOTIFICACION] ? ERROR en reporte ASFI ? D006 IF - Diario Tasas de Inter?s Activa: Entidad: CCM | Corte: 2026-09-16
+Grupo: D006 IF - Diario Tasas de Inter?s Activas
+Problema: Validaci
+2026-09-17 09:00:32,505 [INFO] [URGENTE] Enviando notificacion por un metodo disponible...
+2026-09-17 09:00:49,422 [WARNING] ALERTA ENVIADA: 🔴 ERROR en reporte ASFI — D006 IF - Diario Tasas de Interés Activa
+2026-09-17 09:00:49,422 [INFO] Validando obligaciones configuradas para 16/9/2026...
+2026-09-17 09:00:49,422 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-17 09:00:49,422 [INFO] Reportes diarios aún sin enviar (dentro de plazo): 7
+2026-09-17 09:00:49,422 [INFO] [NOTIFICACION] ? ASFI/SCIP Monitor - 7 reportes diarios sin enviar: Corte: 16/9/2026
+L?mite de env?o: 2026-09-17 12:00:00
+
+  ? Ampliaci?n de plazo de reclamos de primer
+2026-09-17 09:01:00,807 [INFO] Estado de los reportes (1 ✅ | 1 ❌ | 0 ⚠️ | 1 ⏱️ | 7 ⏳):
+2026-09-17 09:01:00,807 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-16)
+2026-09-17 09:01:00,807 [INFO]   ⏳ Ampliación de plazo de reclamos de primera instancia (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:01:00,807 [INFO]   ⏳ D001-D005 IF - Diario Encaje (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:01:00,808 [INFO]   ⏳ D007 IF - Diario Operaciones Interbancarias (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:01:00,808 [INFO]   ⏳ D008 IF - Diario Tipo de Cambio (envío 2) (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:01:00,808 [INFO]   ⏳ D012 - Créditos refinanciados y/o reprogramados (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:01:00,808 [INFO]   ⏳ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:01:00,808 [INFO]   ⏳ Reporte de Transacciones con el Exterior Diario (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:01:00,808 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-17 09:01:00,808 [INFO]   ❌ D006 IF - Diario Tasas de Interés Activas (CCM | corte 2026-09-16) - Validación: Detalle Error
+2026-09-17 09:01:00,808 [INFO] Resumen: 1 exitosos | 0 pendientes | 1 errores | 0 faltantes | 1 tardíos | 7 sin enviar (dentro de plazo)
+2026-09-17 09:01:00,812 [INFO] Revisión completada. Próxima en 15 min.
+2026-09-17 09:04:30,861 [INFO] ============================================================
+2026-09-17 09:04:30,862 [INFO] Iniciando revisión: 2026-09-17 09:04:30
+2026-09-17 09:04:30,896 [INFO] Rangos de consulta: 16/9/2026 a 16/9/2026
+2026-09-17 09:04:31,045 [INFO] Fechas a consultar: 16/9/2026 a 16/9/2026
+2026-09-17 09:04:32,499 [INFO] Iniciando navegador Chromium...
+2026-09-17 09:04:40,806 [INFO] Abriendo login: https://appweb.asfi.gob.bo/SCIP/Login.aspx?ReturnUrl=%2fSCIP%2fmControlPlazos%2fControlPlazos.aspx
+2026-09-17 09:04:44,652 [INFO] Ingresando credenciales...
+2026-09-17 09:04:49,356 [INFO] Login exitoso
+2026-09-17 09:05:06,253 [INFO] Procesando pagina 1 de la tabla...
+2026-09-17 09:05:06,286 [INFO] Filas encontradas en pagina 1: 5
+2026-09-17 09:05:06,693 [INFO] Navegador cerrado.
+2026-09-17 09:05:06,712 [INFO] Filas fuera de las obligaciones vigentes ignoradas: 1
+2026-09-17 09:05:06,749 [INFO] Validando obligaciones configuradas para 16/9/2026...
+2026-09-17 09:05:06,750 [INFO] Reportes mensuales enviados fuera de plazo; se mantienen en Reportes Vencidos sin enviar alerta: ['Reporte de transacciones relativas a la compra de activos virtuales']
+2026-09-17 09:05:06,750 [INFO] Reportes diarios aún sin enviar (dentro de plazo): 5
+2026-09-17 09:05:06,750 [INFO] [NOTIFICACION] ? ASFI/SCIP Monitor - 5 reportes diarios sin enviar: Corte: 16/9/2026
+L?mite de env?o: 2026-09-17 12:00:00
+
+  ? Ampliaci?n de plazo de reclamos de primer
+2026-09-17 09:05:18,189 [INFO] Estado de los reportes (4 ✅ | 0 ❌ | 0 ⚠️ | 1 ⏱️ | 5 ⏳):
+2026-09-17 09:05:18,190 [INFO]   ✅ D007 IF - Diario Operaciones Interbancarias (CCM | corte 2026-09-16)
+2026-09-17 09:05:18,190 [INFO]   ✅ D006 IF - Diario Tasas de Interés Activas (CCM | corte 2026-09-16)
+2026-09-17 09:05:18,190 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-16)
+2026-09-17 09:05:18,190 [INFO]   ✅ D008 IF - Diario Tipo de Cambio (CCM | corte 2026-09-16)
+2026-09-17 09:05:18,190 [INFO]   ⏳ Ampliación de plazo de reclamos de primera instancia (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:05:18,190 [INFO]   ⏳ D001-D005 IF - Diario Encaje (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:05:18,190 [INFO]   ⏳ D012 - Créditos refinanciados y/o reprogramados (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:05:18,191 [INFO]   ⏳ REPORTE DIARIO DE RETIRO DE DEPÓSITOS EN MONEDA EXTRANJERA (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:05:18,191 [INFO]   ⏳ Reporte de Transacciones con el Exterior Diario (SIN ENVIAR - dentro de plazo)
+2026-09-17 09:05:18,191 [INFO]   ⏱️ Reporte de transacciones relativas a la compra de activos virtuales (MENSUAL ENVIADO FUERA DE PLAZO)
+2026-09-17 09:05:18,191 [INFO] Resumen: 4 exitosos | 0 pendientes | 0 errores | 0 faltantes | 1 tardíos | 5 sin enviar (dentro de plazo)
+2026-09-17 09:05:18,194 [INFO] Revisión completada. Próxima en 15 min.

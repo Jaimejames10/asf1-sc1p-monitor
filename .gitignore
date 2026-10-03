@@ -3,3 +3,14 @@ asfi_monitor.db-shm
 asfi_monitor.db-wal
 __pycache__/
 tests/__pycache__/
+build/
+dist/
+installer-output/
+asfi_monitor.log
+asfi_estado.json
+reportes_debug.json
+asfi.txt
+*.db
+*.db-shm
+*.db-wal
+asfi_monitor_backup*

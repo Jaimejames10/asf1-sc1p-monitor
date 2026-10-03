@@ -2,6 +2,8 @@
 
 Secciones:
   - Estado del día: obligaciones del período vigente por reporte.
+  - Envíos por día: agenda de reportes a enviar hoy y en su día de plazo.
+  - Informe PDF: vista previa y exportación del análisis actual.
   - En cola: obligaciones de fechas anteriores que aún no se envían.
   - Catálogo de reportes: altas, bajas y reglas de calendario.
   - Credenciales: acceso a ASFI/SCIP protegido con DPAPI.
@@ -10,7 +12,7 @@ Secciones:
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import messagebox, simpledialog, ttk
+from tkinter import filedialog, messagebox, simpledialog, ttk
 from datetime import datetime, timedelta
 from pathlib import Path
 import sqlite3
@@ -20,10 +22,12 @@ from typing import Optional
 from .formatters import (
     _display_date,
     _display_datetime,
+    _effective_status,
     _optional_int,
     _overdue_days,
 )
 from asfi_monitor_app.storage import api as reportes_db
+from .pdf_export import export_analysis_pdf
 
 
 COLOR_SIDEBAR = "#1e293b"
@@ -53,7 +57,20 @@ ESTADO_COLORS = {
     "ERROR": COLOR_ERROR,
     "FALTANTE": COLOR_MISSING,
     "VENCIDO_SIN_ENVIAR": COLOR_OVERDUE,
-    "CONFIGURAR": COLOR_MUTED,
+    "PLANEADO": COLOR_MUTED,
+}
+
+# Días que se muestran en la agenda de envíos (hoy + próximos días).
+AGENDA_DIAS = 45
+
+DIAS_SEMANA = {
+    0: "lunes",
+    1: "martes",
+    2: "miércoles",
+    3: "jueves",
+    4: "viernes",
+    5: "sábado",
+    6: "domingo",
 }
 
 # Orden en que se muestran los grupos del catálogo por tipo de período.
@@ -73,6 +90,8 @@ from .dialogs import ReportDialog, RuleDialog
 class Dashboard(tk.Tk):
     SECTIONS = (
         ("estado", "Estado del día"),
+        ("agenda", "Envíos por día"),
+        ("informe", "Informe PDF"),
         ("cola", "Reportes Vencidos"),
         ("reportes", "Catálogo de reportes"),
         ("credenciales", "Credenciales"),
@@ -172,7 +191,7 @@ class Dashboard(tk.Tk):
         footer.pack(side="bottom", fill="x", padx=18, pady=14)
         tk.Label(
             footer,
-            text="Versión 1.0.0",
+            text="Versión 1.0.1",
             bg=COLOR_SIDEBAR,
             fg=COLOR_MUTED,
             font=(FONT, 8),
@@ -194,6 +213,8 @@ class Dashboard(tk.Tk):
         content.columnconfigure(0, weight=1)
         builders = {
             "estado": self._build_page_estado,
+            "agenda": self._build_page_agenda,
+            "informe": self._build_page_informe,
             "cola": self._build_page_cola,
             "reportes": self._build_page_reportes,
             "credenciales": self._build_page_credenciales,
@@ -253,6 +274,8 @@ class Dashboard(tk.Tk):
                 button.configure(bg=COLOR_SIDEBAR, fg=COLOR_SIDEBAR_TEXT)
         refreshers = {
             "estado": self._refresh_estado,
+            "agenda": self._refresh_agenda,
+            "informe": self._refresh_informe,
             "cola": self._refresh_cola,
             "reportes": self._refresh_reportes,
             "credenciales": self._load_credentials,
@@ -358,10 +381,10 @@ class Dashboard(tk.Tk):
         error = None
         try:
             if revisar_asfi:
-                # Ejecutar la misma revisión que usa el monitor sin bloquear la GUI.
-                from asfi_monitor_app.application.monitor_service import ejecutar_revision
+                # Ejecutar la misma revisión que usa el agente sin solaparla.
+                from asfi_monitor_app.application.runner import run_once_guarded
 
-                ejecutar_revision()
+                run_once_guarded()
 
             current = reportes_db.local_now()
             conn = reportes_db.connect(self.db_path)
@@ -407,24 +430,7 @@ class Dashboard(tk.Tk):
         for row in self.estado_tree.get_children():
             self.estado_tree.delete(row)
         for row in rows:
-            estado = row["estado"] or "ABIERTO"
-            if estado in ("ABIERTO", "PENDIENTE") and row["fecha_hora_limite"]:
-                try:
-                    limite = datetime.fromisoformat(row["fecha_hora_limite"])
-                    if current > limite:
-                        estado = (
-                            "VENCIDO_SIN_ENVIAR"
-                            if row["tipo_periodo"] == "semanal"
-                            else "FALTANTE"
-                        )
-                except ValueError:
-                    pass
-            elif estado == "ERROR" and row["tipo_periodo"] == "semanal" and row["fecha_hora_limite"]:
-                try:
-                    if current > datetime.fromisoformat(row["fecha_hora_limite"]):
-                        estado = "VENCIDO_SIN_ENVIAR"
-                except ValueError:
-                    pass
+            estado = _effective_status(row, current)
             counts[estado] = counts.get(estado, 0) + 1
 
             tipo = (row.get("tipo_periodo") or "otro").lower()
@@ -461,6 +467,403 @@ class Dashboard(tk.Tk):
         for estado, (label, _card) in self.estado_cards.items():
             label.configure(text=str(counts.get(estado, 0)))
 
+    # ---------- página: envíos por día ----------
+
+    def _agenda_group_label(self, fecha_limite: str, current: datetime) -> str:
+        try:
+            day = datetime.strptime(fecha_limite, "%Y-%m-%d").date()
+        except (TypeError, ValueError):
+            return fecha_limite or "-"
+        if day == current.date():
+            prefix = "HOY"
+        elif day == current.date() + timedelta(days=1):
+            prefix = "MAÑANA"
+        else:
+            prefix = ""
+        base = (
+            f"{DIAS_SEMANA[day.weekday()].capitalize()} "
+            f"{day.day}/{day.month}/{day.year}"
+        )
+        return f"{prefix} - {base}" if prefix else base
+
+    def _build_page_agenda(self, parent: tk.Frame) -> None:
+        header = self._page_header(
+            parent,
+            "Envíos por día",
+            "Reportes mensuales que deben enviarse hoy y en su día de plazo",
+        )
+        self.agenda_refresh_button = ttk.Button(
+            header,
+            text="Actualizar",
+            style="Dash.TButton",
+            command=lambda: self._refresh_agenda(revisar_asfi=True),
+        )
+        self.agenda_refresh_button.pack(side="right")
+        self.agenda_progress = ttk.Progressbar(header, mode="indeterminate", length=110)
+        self.agenda_progress.pack(side="right", padx=(0, 8))
+        self.agenda_loading = tk.StringVar(value="")
+        tk.Label(
+            header,
+            textvariable=self.agenda_loading,
+            bg=COLOR_CARD,
+            fg=COLOR_MUTED,
+            font=(FONT, 9),
+        ).pack(side="right", padx=(0, 8))
+        self.agenda_refreshing = False
+
+        self.agenda_summary = tk.StringVar(value="")
+        tk.Label(
+            parent,
+            textvariable=self.agenda_summary,
+            bg=COLOR_BG,
+            fg=COLOR_TEXT,
+            font=(FONT, 10, "bold"),
+            anchor="w",
+        ).pack(fill="x", padx=18, pady=(0, 4))
+
+        columns = ("tipo", "nombre", "corte", "hasta", "estado", "envio", "revisado")
+        headings = {
+            "tipo": "Tipo",
+            "nombre": "Reporte",
+            "corte": "Fecha corte",
+            "hasta": "Enviar hasta",
+            "estado": "Estado",
+            "envio": "Fecha envío",
+            "revisado": "Última revisión",
+        }
+        widths = {
+            "tipo": 80, "nombre": 400, "corte": 95, "hasta": 135,
+            "estado": 110, "envio": 135, "revisado": 135,
+        }
+        self.agenda_tree = self._table(parent, columns, headings, widths, height=15)
+        self.agenda_tree.tag_configure(
+            "grupo_agenda",
+            background=COLOR_BG,
+            foreground=COLOR_TEXT,
+            font=(FONT, 9, "bold"),
+        )
+
+    def _refresh_agenda(self, revisar_asfi: bool = False) -> None:
+        if self.agenda_refreshing:
+            return
+        self.agenda_refreshing = True
+        self.agenda_refresh_button.configure(state="disabled")
+        self.agenda_loading.set(
+            "Consultando ASFI..." if revisar_asfi else "Cargando agenda..."
+        )
+        self.agenda_progress.start(10)
+        threading.Thread(
+            target=self._refresh_agenda_worker,
+            args=(revisar_asfi,),
+            daemon=True,
+        ).start()
+
+    def _refresh_agenda_worker(self, revisar_asfi: bool) -> None:
+        rows = []
+        current = reportes_db.local_now()
+        error = None
+        try:
+            if revisar_asfi:
+                from asfi_monitor_app.application.runner import run_once_guarded
+
+                run_once_guarded()
+
+            current = reportes_db.local_now()
+            conn = reportes_db.connect(self.db_path)
+            try:
+                rows = reportes_db.list_upcoming_sends(conn, AGENDA_DIAS, current)
+            finally:
+                conn.close()
+        except Exception as exc:
+            error = exc
+
+        try:
+            self.after(0, self._finish_refresh_agenda, rows, current, error, revisar_asfi)
+        except tk.TclError:
+            pass
+
+    def _finish_refresh_agenda(
+        self, rows: list[dict], current: datetime, error: Optional[Exception], revisar_asfi: bool
+    ) -> None:
+        self.agenda_refreshing = False
+        self.agenda_progress.stop()
+        self.agenda_refresh_button.configure(state="normal")
+        if error is not None:
+            self.agenda_loading.set("Error al actualizar")
+            messagebox.showerror(
+                "Envíos por día",
+                f"No se pudo actualizar la agenda:\n{error}",
+                parent=self,
+            )
+            return
+        self.agenda_loading.set(
+            "Agenda actualizada" if revisar_asfi else "Agenda cargada"
+        )
+        try:
+            self._render_agenda(rows, current)
+        except Exception as exc:
+            self.agenda_loading.set("Error al mostrar la agenda")
+            messagebox.showerror("Envíos por día", f"No se pudo mostrar la agenda:\n{exc}", parent=self)
+
+    def _render_agenda(self, rows: list[dict], current: datetime) -> None:
+        for item_id in self.agenda_tree.get_children():
+            self.agenda_tree.delete(item_id)
+
+        # La agenda se enfoca en los mensuales: los diarios y semanales ya
+        # tienen su vista en "Estado del día".
+        rows = [row for row in rows if (row.get("tipo_periodo") or "").lower() == "mensual"]
+
+        hoy = current.date().isoformat()
+        exitosos_hoy = pendientes_hoy = 0
+        grouped: dict[str, list[dict]] = {}
+        for row in rows:
+            grouped.setdefault(row["fecha_limite"], []).append(row)
+
+        for fecha_limite in sorted(grouped):
+            day_rows = grouped[fecha_limite]
+            for row in day_rows:
+                if row.get("planificado"):
+                    estado = "PLANEADO"
+                else:
+                    estado = _effective_status(row, current)
+                if fecha_limite == hoy:
+                    if estado == "EXITOSO":
+                        exitosos_hoy += 1
+                    elif estado not in ("PLANEADO",):
+                        pendientes_hoy += 1
+            self.agenda_tree.insert(
+                "",
+                "end",
+                values=(
+                    self._agenda_group_label(fecha_limite, current),
+                    f"{len(day_rows)} reportes",
+                    "", "", "", "", "",
+                ),
+                tags=("grupo_agenda",),
+            )
+            for row in day_rows:
+                if row.get("planificado"):
+                    estado = "PLANEADO"
+                else:
+                    estado = _effective_status(row, current)
+                self.agenda_tree.insert(
+                    "",
+                    "end",
+                    values=(
+                        row["tipo_periodo"].title(),
+                        row["nombre"],
+                        _display_date(row["fecha_corte"]),
+                        _display_datetime(row["fecha_hora_limite"]),
+                        estado,
+                        _display_datetime(row.get("fecha_envio")),
+                        _display_datetime(row.get("ultima_revision")),
+                    ),
+                    tags=(estado.lower(),),
+                )
+
+        total_hoy = exitosos_hoy + pendientes_hoy
+        self.agenda_summary.set(
+            f"Hoy: {total_hoy} mensuales por enviar | "
+            f"Exitosos: {exitosos_hoy} | Pendientes o con error: {pendientes_hoy} | "
+            f"Horizonte: {AGENDA_DIAS} días"
+        )
+
+    # ---------- página: informe PDF ----------
+
+    def _build_page_informe(self, parent: tk.Frame) -> None:
+        header = self._page_header(
+            parent,
+            "Informe de análisis",
+            "Vista previa y descarga del estado actual en PDF",
+        )
+        actions = tk.Frame(header, bg=COLOR_CARD)
+        actions.pack(side="right")
+        self.informe_refresh_button = ttk.Button(
+            actions,
+            text="Actualizar desde ASFI",
+            style="Dash.TButton",
+            command=lambda: self._refresh_informe(revisar_asfi=True),
+        )
+        self.informe_refresh_button.pack(side="left", padx=3)
+        self.informe_export_button = ttk.Button(
+            actions,
+            text="Descargar PDF",
+            style="Dash.TButton",
+            command=self._export_informe_pdf,
+        )
+        self.informe_export_button.pack(side="left", padx=3)
+        self.informe_progress = ttk.Progressbar(actions, mode="indeterminate", length=100)
+        self.informe_progress.pack(side="left", padx=(8, 0))
+
+        self.informe_status = tk.StringVar(value="")
+        tk.Label(
+            parent,
+            textvariable=self.informe_status,
+            bg=COLOR_BG,
+            fg=COLOR_MUTED,
+            font=(FONT, 9),
+            anchor="w",
+        ).pack(fill="x", padx=18, pady=(0, 6))
+        self.informe_summary = tk.StringVar(value="")
+        tk.Label(
+            parent,
+            textvariable=self.informe_summary,
+            bg=COLOR_BG,
+            fg=COLOR_TEXT,
+            font=(FONT, 10, "bold"),
+            anchor="w",
+        ).pack(fill="x", padx=18, pady=(0, 8))
+
+        columns = ("tipo", "nombre", "corte", "envio", "limite", "estado")
+        headings = {
+            "tipo": "Tipo",
+            "nombre": "Reporte",
+            "corte": "Fecha corte",
+            "envio": "Fecha envío",
+            "limite": "Hora límite",
+            "estado": "Estado",
+        }
+        widths = {
+            "tipo": 75,
+            "nombre": 350,
+            "corte": 90,
+            "envio": 120,
+            "limite": 120,
+            "estado": 110,
+        }
+        self.informe_tree = self._table(parent, columns, headings, widths, height=15)
+        self.informe_refreshing = False
+        self.informe_loaded = False
+        self.informe_rows: list[dict] = []
+        self.informe_current = reportes_db.local_now()
+
+    def _refresh_informe(self, revisar_asfi: bool = False) -> None:
+        if self.informe_refreshing:
+            return
+        self.informe_refreshing = True
+        self.informe_refresh_button.configure(state="disabled")
+        self.informe_export_button.configure(state="disabled")
+        self.informe_status.set(
+            "Consultando ASFI..." if revisar_asfi else "Cargando estado guardado..."
+        )
+        self.informe_progress.start(10)
+        threading.Thread(
+            target=self._refresh_informe_worker,
+            args=(revisar_asfi,),
+            daemon=True,
+        ).start()
+
+    def _refresh_informe_worker(self, revisar_asfi: bool) -> None:
+        rows = []
+        current = reportes_db.local_now()
+        error = None
+        try:
+            if revisar_asfi:
+                from asfi_monitor_app.application.runner import run_once_guarded
+
+                run_once_guarded()
+            current = reportes_db.local_now()
+            conn = reportes_db.connect(self.db_path)
+            try:
+                rows = reportes_db.list_today_obligations(conn, current)
+            finally:
+                conn.close()
+        except Exception as exc:
+            error = exc
+
+        try:
+            self.after(0, self._finish_refresh_informe, rows, current, error, revisar_asfi)
+        except tk.TclError:
+            pass
+
+    def _finish_refresh_informe(
+        self,
+        rows: list[dict],
+        current: datetime,
+        error: Optional[Exception],
+        revisar_asfi: bool,
+    ) -> None:
+        self.informe_refreshing = False
+        self.informe_progress.stop()
+        self.informe_refresh_button.configure(state="normal")
+        self.informe_export_button.configure(state="normal")
+        if error is not None:
+            self.informe_status.set("Error al actualizar el informe")
+            messagebox.showerror(
+                "Informe PDF",
+                f"No se pudo preparar el análisis:\n{error}",
+                parent=self,
+            )
+            return
+        self.informe_rows = rows
+        self.informe_current = current
+        self.informe_loaded = True
+        self.informe_status.set(
+            "Análisis actualizado desde ASFI" if revisar_asfi else "Estado guardado cargado"
+        )
+        self._render_informe(rows, current)
+
+    def _render_informe(self, rows: list[dict], current: datetime) -> None:
+        for item_id in self.informe_tree.get_children():
+            self.informe_tree.delete(item_id)
+        counts: dict[str, int] = {}
+        for row in rows:
+            estado = _effective_status(row, current)
+            counts[estado] = counts.get(estado, 0) + 1
+            self.informe_tree.insert(
+                "",
+                "end",
+                values=(
+                    row["tipo_periodo"].title(),
+                    row["nombre"],
+                    _display_date(row["fecha_corte"]),
+                    _display_datetime(row.get("fecha_envio")),
+                    _display_datetime(row["fecha_hora_limite"]),
+                    estado,
+                ),
+                tags=(estado.lower(),),
+            )
+        self.informe_summary.set(
+            f"Total: {len(rows)} | OK: {counts.get('EXITOSO', 0)} | "
+            f"Errores: {counts.get('ERROR', 0)} | "
+            f"Faltantes: {counts.get('FALTANTE', 0)} | "
+            f"Pendientes: {counts.get('PENDIENTE', 0)} | "
+            f"Tardíos: {counts.get('EXITOSO_TARDIO', 0)}"
+        )
+
+    def _export_informe_pdf(self) -> None:
+        if not self.informe_loaded:
+            messagebox.showinfo(
+                "Informe PDF",
+                "No hay datos del análisis para exportar. Actualice el informe primero.",
+                parent=self,
+            )
+            return
+        timestamp = self.informe_current.strftime("%Y%m%d_%H%M")
+        selected = filedialog.asksaveasfilename(
+            parent=self,
+            title="Guardar informe PDF",
+            initialfile=f"asfi_analisis_{timestamp}.pdf",
+            defaultextension=".pdf",
+            filetypes=(("Archivo PDF", "*.pdf"), ("Todos los archivos", "*.*")),
+        )
+        if not selected:
+            return
+        try:
+            output = export_analysis_pdf(selected, self.informe_rows, self.informe_current)
+        except Exception as exc:
+            messagebox.showerror(
+                "Informe PDF",
+                f"No se pudo generar el PDF:\n{exc}",
+                parent=self,
+            )
+            return
+        messagebox.showinfo(
+            "Informe PDF",
+            f"El informe fue guardado en:\n{output}",
+            parent=self,
+        )
+
     # ---------- página: en cola (atrasados) ----------
 
     def _build_page_cola(self, parent: tk.Frame) -> None:
@@ -471,7 +874,6 @@ class Dashboard(tk.Tk):
         )
         actions = tk.Frame(header, bg=COLOR_CARD)
         actions.pack(side="right")
-        ttk.Button(actions, text="Actualizar", style="Dash.TButton", command=self._refresh_cola).pack(side="left", padx=3)
         ttk.Button(
             actions, text="Quitar seleccionado", style="Dash.TButton", command=self._dismiss_selected_overdue
         ).pack(side="left", padx=3)
@@ -1163,11 +1565,13 @@ class Dashboard(tk.Tk):
 
 
 def ejecutar_gui(db_path: Optional[Path] = None) -> None:
-    db_path = db_path or reportes_db.resolve_path("asfi_monitor.db")
+    reportes_db.ensure_user_data_dirs()
+    reportes_db.migrate_legacy_data()
+    db_path = db_path or reportes_db.resolve_data_path("asfi_monitor.db")
     reportes_db.initialize_database(
         db_path,
-        reportes_db.resolve_path("reportes_seed.json"),
-        reportes_db.resolve_path("reportes_no_enviados.json"),
+        reportes_db.resolve_resource_path("reportes_seed.json"),
+        reportes_db.resolve_data_path("reportes_no_enviados.json"),
     )
     app = Dashboard(db_path)
     app.mainloop()

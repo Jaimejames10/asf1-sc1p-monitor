@@ -62,11 +62,11 @@ def _cargar_credenciales(config: dict) -> None:
     if config["usuario"] and config["password"]:
         return
     try:
-        db_path = reportes_db.resolve_path(config["archivo_base_datos"])
+        db_path = reportes_db.resolve_data_path(config["archivo_base_datos"])
         reportes_db.initialize_database(
             db_path,
-            reportes_db.resolve_path(config["archivo_semilla"]),
-            reportes_db.resolve_path(config["archivo_no_enviados"]),
+            reportes_db.resolve_resource_path(config["archivo_semilla"]),
+            reportes_db.resolve_data_path(config["archivo_no_enviados"]),
         )
         conn = reportes_db.connect(db_path)
         try:
@@ -96,10 +96,11 @@ def obtener_reportes(
     from playwright.sync_api import TimeoutError as PWTimeout
     from playwright.sync_api import sync_playwright
 
+    reportes_db.configure_playwright_browser_path()
     config = config or DEFAULT_CONFIG
     log = logger or logging.getLogger("asfi_monitor")
     if notify is None:
-        icon_path = icon_path or reportes_db.resolve_path(config["icono_notificacion"])
+        icon_path = icon_path or reportes_db.resolve_resource_path(config["icono_notificacion"])
 
         def notify(title: str, message: str, urgent: bool = False) -> None:
             default_notificar(title, message, urgent, logger=log, icon_path=icon_path)

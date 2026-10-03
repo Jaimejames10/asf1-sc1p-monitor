@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
+import tempfile
 
 
 def cargar_estado(path: Path) -> dict:
@@ -16,10 +18,26 @@ def cargar_estado(path: Path) -> dict:
 
 
 def guardar_estado(path: Path, estado: dict) -> None:
-    path.write_text(
-        json.dumps(estado, ensure_ascii=False, indent=2, default=str),
-        encoding="utf-8",
-    )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    contenido = json.dumps(estado, ensure_ascii=False, indent=2, default=str)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            temporary = Path(handle.name)
+            handle.write(contenido)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None and temporary.exists():
+            temporary.unlink()
 
 
 def clave_reporte(reporte: dict) -> str:

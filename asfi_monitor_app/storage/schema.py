@@ -1,6 +1,6 @@
 """Esquema SQLite versionado del monitor."""
 
-SCHEMA_VERSION = 7
+SCHEMA_VERSION = 8
 
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS app_meta (
@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS reglas_reportes (
     dias_plazo INTEGER,
     tipo_plazo TEXT,
     excluir_ultimo_dia_mes INTEGER NOT NULL DEFAULT 0,
+    fin_semana_hasta_lunes INTEGER NOT NULL DEFAULT 0,
     activo INTEGER NOT NULL DEFAULT 1,
     creado_en TEXT NOT NULL,
     actualizado_en TEXT NOT NULL

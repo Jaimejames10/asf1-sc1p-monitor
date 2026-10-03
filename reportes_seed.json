@@ -9,9 +9,9 @@
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 2, "dias_envio": [3], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 3, "dias_envio": [4], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 4, "dias_envio": [5], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1}
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true}
       ]
     },
     {
@@ -23,9 +23,9 @@
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 2, "dias_envio": [3], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 3, "dias_envio": [4], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 4, "dias_envio": [5], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1}
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true}
       ]
     },
     {
@@ -52,9 +52,9 @@
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 2, "dias_envio": [3], "hora_limite": "12:00", "ocurrencias_requeridas": 2},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 3, "dias_envio": [4], "hora_limite": "12:00", "ocurrencias_requeridas": 2},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 4, "dias_envio": [5], "hora_limite": "12:00", "ocurrencias_requeridas": 2},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 2},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 2},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1}
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 2, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 2, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true}
       ]
     },
     {
@@ -74,9 +74,9 @@
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 2, "dias_envio": [3], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 3, "dias_envio": [4], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 4, "dias_envio": [5], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1}
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true}
       ]
     },
     {
@@ -88,9 +88,9 @@
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 2, "dias_envio": [3], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 3, "dias_envio": [4], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 4, "dias_envio": [5], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1}
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true}
       ]
     },
     {
@@ -102,9 +102,9 @@
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 2, "dias_envio": [3], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "excluir_ultimo_dia_mes": true},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 3, "dias_envio": [4], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "excluir_ultimo_dia_mes": true},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 4, "dias_envio": [5], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "excluir_ultimo_dia_mes": true},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "excluir_ultimo_dia_mes": true},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "excluir_ultimo_dia_mes": true},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "excluir_ultimo_dia_mes": true}
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "excluir_ultimo_dia_mes": true, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "excluir_ultimo_dia_mes": true, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "excluir_ultimo_dia_mes": true, "fin_semana_hasta_lunes": true}
       ]
     },
     {
@@ -116,9 +116,9 @@
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 2, "dias_envio": [3], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 3, "dias_envio": [4], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 4, "dias_envio": [5], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1}
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true}
       ]
     },
     {
@@ -130,9 +130,9 @@
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 2, "dias_envio": [3], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 3, "dias_envio": [4], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
         {"regla_fecha_corte": "AYER", "dia_semana_corte": 4, "dias_envio": [5], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1},
-        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1}
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 5, "dias_envio": [6], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 6, "dias_envio": [7], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true},
+        {"regla_fecha_corte": "AYER", "dia_semana_corte": 7, "dias_envio": [1], "hora_limite": "12:00", "ocurrencias_requeridas": 1, "fin_semana_hasta_lunes": true}
       ]
     },
     {

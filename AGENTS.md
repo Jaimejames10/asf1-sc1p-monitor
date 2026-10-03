@@ -43,7 +43,7 @@ Monitor automatizado que controla el envío de reportes al sistema ASFI/SCIP (pl
 | **Python** | 3.8+ | Lenguaje principal |
 | **Playwright** | ≥1.40.0 | Web scraping y automatización |
 | **Plyer** | ≥2.1.0 | Notificaciones del sistema Windows |
-| **Schedule** | ≥1.2.0 | Planificación de tareas periódicas |
+| **MonitorRunner** | Interno | Planificación serializada y segura |
 | **SQLite** | Incluido en Python | Catálogo, obligaciones, historial y credenciales |
 | **Tkinter** | Incluido en Python para Windows | Administración local del catálogo |
 
@@ -100,10 +100,18 @@ Reports_ASFI_monitor/
 - `storage/`: SQLite, migraciones, obligaciones, observaciones, DPAPI y estado JSON
 - `ui/`: dashboard, diálogos y formateadores de la interfaz
 
+La distribución de Windows utiliza tres entradas empaquetadas: la GUI
+(`ASFI_Monitor_GUI.exe`), el agente silencioso (`ASFI_Monitor_Agent.exe`) y la
+CLI (`ASFI_Monitor_CLI.exe`). El agente se inicia al iniciar sesión del usuario
+y comparte el motor serializado de `application/runner.py` con la CLI. Los
+datos modificables de una instalación congelada se guardan en
+`%LOCALAPPDATA%\ASFI Monitor`; los recursos semilla y el icono permanecen en la
+carpeta instalada.
+
 **reportes_db.py**
 - Fachada compatible de la API SQLite
 - La implementación está en `asfi_monitor_app/storage/`
-- Conserva el esquema versión 7 y la protección DPAPI
+- Conserva el esquema versión 8 y la protección DPAPI
 
 **gestionar_reportes.py**
 - Fachada compatible para iniciar la GUI
@@ -191,6 +199,10 @@ Los feriados nacionales bolivianos se cargan automáticamente para varios años 
 pueden agregarse o eliminarse desde la sección **Configuración** de
 `gestionar_reportes.py`. La misma sección permite administrar el rango manual de
 fechas de consulta.
+
+Las reglas diarias de viernes, sábado y domingo pueden marcarse como **Fin de
+semana: permitir envío hasta el lunes a las 12:00**. Las reglas diarias
+configuradas en la semilla ya utilizan este plazo.
 
 ---
 
@@ -282,6 +294,16 @@ python asfi_monitor.py --una-vez
 python gestionar_reportes.py
 # o configurar.bat
 ```
+Desde la sección **Informe PDF** se puede actualizar el análisis desde ASFI,
+revisar su vista previa y guardar el resultado en un archivo PDF.
+
+### Construcción del instalador Windows
+```powershell
+.\build_windows.ps1
+```
+El comando genera las carpetas `dist/` para PyInstaller. Luego se compila
+`asfi_monitor.iss` con Inno Setup; el instalador crea el acceso directo de la
+GUI y el inicio automático del agente al iniciar sesión.
 
 ### Con UI visible (útil para debugging)
 ```bash
@@ -333,7 +355,7 @@ python probar_notificaciones.py
 
 4. **Refactorización**
    - Mantén la sección CONFIG intacta para que el usuario pueda editarla fácilmente
-   - Los loops infinitos con `schedule` deben seguir el patrón actual
+   - El ciclo continuo debe conservar la serialización y el apagado de `MonitorRunner`
    - Preserva compatibilidad con argumentos CLI (`--intervalo`, `--una-vez`, `--visible`, `--verbose`)
 
 5. **Restricciones**
@@ -411,7 +433,7 @@ python probar_notificaciones.py
 
 4. **Contexto mínimo requerido para entender consultas**
    - Versión de Python (3.8+)
-   - Librerías principales: Playwright, Plyer, Schedule
+   - Librerías principales: Playwright, Plyer y MonitorRunner
    - Estructura de archivos JSON y config
    - Formato de credenciales (variables de entorno)
 
